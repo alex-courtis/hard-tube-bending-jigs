@@ -4,7 +4,7 @@
 $fn = 200;
 
 // top or bottom
-top = true;
+bottom = false;
 
 // tube outer radius
 tube_r = 8;
@@ -15,6 +15,9 @@ bend_a = 60;
 
 // length of straights from centre of bend
 straight_l = 100;
+
+// bolt, M3
+bolt_r = 1.5;
 
 // lower skirt
 skirt_r = bend_r + 2 * tube_r;
@@ -36,14 +39,13 @@ echo(skirt_r=skirt_r);
 echo(skirt_h=skirt_h);
 echo(lip_r=lip_r);
 
-if (top) {
+// entire piece
+if (bottom) {
 
   extrude_bend()
     cross_section_bottom();
-
   extrude_right_straight()
     cross_section_bottom();
-
   extrude_left_straight()
     cross_section_bottom();
 
@@ -51,10 +53,8 @@ if (top) {
 
   extrude_bend()
     cross_section_top();
-
   extrude_right_straight()
     cross_section_top();
-
   extrude_left_straight()
     cross_section_top();
 }
@@ -93,23 +93,49 @@ module cross_section_top() {
   }
 }
 
+module bolt_hole() {
+  color(c="black")
+    cylinder(h=skirt_h + tube_r * 2 + lip_r * 2, r=bolt_r, center=false);
+}
+
 module extrude_bend()
-  color(c="blue", alpha=1.0)
-    rotate_extrude(angle=180 - bend_a)
-      children();
+  difference() {
 
-module extrude_right_straight()
-  color(c="green", alpha=1.0)
-    translate([0, -straight_l / 2, 0])
-      rotate(a=90, v=[1, 0, 0])
-        linear_extrude(height=straight_l, center=true)
-          children();
+    // body
+    color(c="blue")
+      rotate_extrude(angle=180 - bend_a)
+        children();
 
-module extrude_left_straight()
-  color(c="red", alpha=1.0)
-    rotate(a=180 - bend_a, v=[0, 0, 1])
-      translate([0, straight_l / 2, 0])
+    // bolt hole closer to centre
+    translate([(bend_r - tube_r) / 2 * cos((180 - bend_a) / 2), (bend_r - tube_r) / 2 * sin((180 - bend_a) / 2), 0])
+      bolt_hole();
+  }
+
+module extrude_right_straight() {
+  translate([0, -straight_l / 2, 0])
+    difference() {
+      // body
+      color(c="green")
         rotate(a=90, v=[1, 0, 0])
           linear_extrude(height=straight_l, center=true)
             children();
 
+      // bolt hole end
+      translate(v=[(bend_r - tube_r) / 2, -(straight_l - bend_r + tube_r) / 2, 0])
+        bolt_hole();
+    }
+}
+
+module extrude_left_straight()
+  rotate(a=180 - bend_a, v=[0, 0, 1])
+    translate([0, straight_l / 2, 0])
+      difference() {
+        color(c="orange")
+          rotate(a=90, v=[1, 0, 0])
+            linear_extrude(height=straight_l, center=true)
+              children();
+
+        // bolt hole end
+        translate(v=[(bend_r - tube_r) / 2, (straight_l - bend_r + tube_r) / 2, 0])
+          bolt_hole();
+      }
