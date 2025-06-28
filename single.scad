@@ -4,22 +4,17 @@
 $fn = 200;
 
 // bottom or top
-top = false;
+top = true;
 
 // tube outer radius
 tube_r = 8;
 
 // bend to tube center
 bend_r = 30;
-bend_a = 50;
+bend_a = 45;
 
 // length of straights from centre of bend
-straight_l = 100;
-
-// bolt and nut, M3
-bolt_r = 1.5;
-nut_w = 5.5;
-nut_d = 4;
+straight_l = 80;
 
 // lower skirt
 skirt_r = bend_r + 2 * tube_r;
@@ -27,6 +22,15 @@ skirt_h = 1.5;
 
 // upper lip
 lip_r = 1.5;
+
+// bolt and nut, M3
+bolt_r = 1.5;
+nut_w = 5.5;
+nut_d = 4;
+
+// text size and depth; maybe need to move to skirt
+text_pt = 7;
+text_d = 1;
 
 // clear the log
 echo("\n\n\n\n\n\n\n\n\n\n");
@@ -40,6 +44,11 @@ echo(straight_l=straight_l);
 echo(skirt_r=skirt_r);
 echo(skirt_h=skirt_h);
 echo(lip_r=lip_r);
+echo(bolt_r=bolt_r);
+echo(nut_w=nut_w);
+echo(nut_d=nut_d);
+echo(text_pt=text_pt);
+echo(text_d=text_d);
 
 // entire piece
 if (top) {
@@ -104,6 +113,14 @@ module bolt_hole() {
   }
 }
 
+module straight_text(text) {
+  translate(v=[bend_r / 2, (bend_r - straight_l) / 2, text_d])
+    rotate(a=90, v=[0, 0, 1])
+      rotate(a=180, v=[1, 0, 0])
+        linear_extrude(height=text_d, center=false)
+          text(size=text_pt, text=text);
+}
+
 module extrude_bend() {
   difference() {
 
@@ -131,6 +148,10 @@ module extrude_right_straight() {
       // bolt hole end
       translate(v=[(bend_r - tube_r) / 2, -(straight_l - bend_r + tube_r) / 2, 0])
         bolt_hole();
+
+      // tube info
+      if (top)
+        straight_text(text=str(tube_r * 2, "mm Tube"));
     }
 }
 
@@ -148,5 +169,9 @@ module extrude_left_straight() {
         // bolt hole end
         translate(v=[(bend_r - tube_r) / 2, (straight_l - bend_r + tube_r) / 2, 0])
           bolt_hole();
+
+        // bend info
+        if (top)
+          straight_text(text=str(bend_a, "° ", bend_r, "mm"));
       }
 }
