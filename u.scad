@@ -1,110 +1,115 @@
-// TODO
-// create a single piece and rotate / extrude that
+// single bend: top and bottom printed separately and bolted together
+// flush caches before render on "WARNING: Object may not be a valid 2-manifold and may need repair!"
 
-// clear the log
-echo("\n\n\n\n\n\n\n\n\n\n");
+$fn = 200;
 
-$fn = 100;
+// top or bottom
+top = true;
 
 // tube outer radius
 tube_r = 8;
 
-// bend
-bend_r = 60;
-bend_a = 180;
+// bend to tube center
+bend_r = 50;
+bend_a = 60;
 
-// length of straights
+// length of straights from centre of bend
 straight_l = 100;
 
-// lower skirt, derived
-skirt_r = bend_r * 1.5;
-skirt_h = tube_r * 0.1;
+// lower skirt
+skirt_r = bend_r + 2 * tube_r;
+skirt_h = 1.5;
 
-// upper lip, derived
-lip_h = tube_r * 0.1;
+// upper lip
+lip_r = 1.5;
 
-// rotate_extrude start is unavailable in GA, hence position parts around it's 180
-
-echo($fa=$fa)
-echo($fn=$fn)
-echo($fs=$fs)
+// clear the log
+echo("\n\n\n\n\n\n\n\n\n\n");
+echo($fa=$fa);
+echo($fn=$fn);
+echo($fs=$fs);
 echo(tube_r=tube_r);
 echo(bend_r=bend_r);
 echo(bend_a=bend_a);
 echo(straight_l=straight_l);
 echo(skirt_r=skirt_r);
 echo(skirt_h=skirt_h);
-echo(lip_h=lip_h);
+echo(lip_r=lip_r);
 
-// bend body
-difference() {
-  color(c="red")
-    rotate_extrude(angle=bend_a)
-      translate(v=[0, -tube_r, 0])
-        square([bend_r, tube_r * 2], center=false);
+if (top) {
 
-  // hollow
-  color(c="green")
-    rotate_extrude(angle=bend_a)
-      translate(v=[bend_r, 0, 0])
-        circle(r=tube_r);
+  extrude_bend()
+    cross_section_bottom();
+
+  extrude_right_straight()
+    cross_section_bottom();
+
+  extrude_left_straight()
+    cross_section_bottom();
+
+} else {
+
+  extrude_bend()
+    cross_section_top();
+
+  extrude_right_straight()
+    cross_section_top();
+
+  extrude_left_straight()
+    cross_section_top();
 }
 
-// bend skirt
-color(c="purple", alpha=0.5)
-  translate([0, 0, -tube_r - skirt_h])
-    rotate_extrude(angle=bend_a)
-      square([skirt_r, skirt_h], center=false);
+module cross_section_bottom() {
 
-// bend lip edge
-color(c="indigo", alpha=0.5)
-  translate([0, 0, tube_r + lip_h])
-    rotate_extrude(angle=bend_a)
-      translate(v=[bend_r, 0, 0])
-        circle(r=lip_h);
+  // bottom skirt
+  square([skirt_r, skirt_h], center=false);
 
-// bend top
-color(c="aquamarine", alpha=0.25)
-  translate([0, 0, tube_r])
-    rotate_extrude(angle=bend_a)
-      square([bend_r, lip_h * 2], center=false);
-
-// straight body
-translate([0, -straight_l / 2, 0]) {
+  // body
   difference() {
+    square([bend_r, skirt_h + tube_r], center=false);
 
-    color(c="yellow", alpha=0.25)
-      cube(size=[bend_r * 2, straight_l, tube_r * 2], center=true);
-
-    // hollows
-    color(c="blue")
-      translate([-bend_r, 0, 0])
-        rotate(a=90, v=[1, 0, 0])
-          cylinder(h=straight_l, r=tube_r, center=true);
-
-    color(c="cyan")
-      translate([bend_r, 0, 0])
-        rotate(a=90, v=[1, 0, 0])
-          cylinder(h=straight_l, r=tube_r, center=true);
+    // tube hollow
+    translate(v=[bend_r, skirt_h + tube_r, 0]) {
+      circle(r=tube_r);
+    }
   }
 }
 
-// straight skirt
-color(c="orange")
-  translate([0, -straight_l / 2, -tube_r - skirt_h / 2])
-    cube(size=[skirt_r * 2, straight_l, skirt_h], center=true);
+module cross_section_top() {
 
-// straight lip edges
-color(c="tomato")
-  translate([-bend_r, -straight_l / 2, tube_r + lip_h])
-    rotate(a=90, v=[1, 0, 0])
-      cylinder(h=straight_l, r=lip_h, center=true);
-color(c="orangered")
-  translate([bend_r, -straight_l / 2, tube_r + lip_h])
-    rotate(a=90, v=[1, 0, 0])
-      cylinder(h=straight_l, r=lip_h, center=true);
+  // top lip
+  translate(v=[bend_r, lip_r, 0]) {
+    circle(r=lip_r);
+  }
 
-// straight top
-color(c="chocolate")
-  translate([0, -straight_l / 2, tube_r + lip_h])
-    cube(size=[bend_r * 2, straight_l, lip_h * 2], center=true);
+  // body and top
+  difference() {
+    square([bend_r, tube_r + lip_r * 2], center=false);
+
+    // tube hollow
+    translate(v=[bend_r, tube_r + lip_r * 2, 0]) {
+      circle(r=tube_r);
+    }
+  }
+}
+
+module extrude_bend()
+  color(c="blue", alpha=1.0)
+    rotate_extrude(angle=180 - bend_a)
+      children();
+
+module extrude_right_straight()
+  color(c="green", alpha=1.0)
+    translate([0, -straight_l / 2, 0])
+      rotate(a=90, v=[1, 0, 0])
+        linear_extrude(height=straight_l, center=true)
+          children();
+
+module extrude_left_straight()
+  color(c="red", alpha=1.0)
+    rotate(a=180 - bend_a, v=[0, 0, 1])
+      translate([0, straight_l / 2, 0])
+        rotate(a=90, v=[1, 0, 0])
+          linear_extrude(height=straight_l, center=true)
+            children();
+
