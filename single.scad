@@ -115,12 +115,10 @@ module cross_section_top() {
 module bolt_shaft() {
 
   // full height
-  color(c="yellow") {
-    if (top) {
-      cylinder(h=tube_r + lip_r * 2, r=bolt_r + wall_w, center=false);
-    } else {
-      cylinder(h=tube_r + skirt_h, r=bolt_r + wall_w, center=false);
-    }
+  if (top) {
+    cylinder(h=tube_r + lip_r * 2, r=bolt_r + wall_w, center=false);
+  } else {
+    cylinder(h=tube_r + skirt_h, r=bolt_r + wall_w, center=false);
   }
 }
 
@@ -157,7 +155,7 @@ module extrude_bend() {
           children();
 
       // bolt shaft closer to centre
-      color(c="yellow")
+      color(c="red")
         translate([(bend_r - tube_r) / 2 * cos((180 - bend_a) / 2), (bend_r - tube_r) / 2 * sin((180 - bend_a) / 2), 0])
           bolt_shaft();
     }
@@ -183,8 +181,9 @@ module extrude_right_straight() {
               children();
 
         // bolt shaft
-        translate(v=[(bend_r - tube_r) / 2, -(straight_l - bend_r + tube_r) / 2, 0])
-          bolt_shaft();
+        color(c="red")
+          translate(v=[(bend_r - tube_r) / 2, -(straight_l - bend_r + tube_r) / 2, 0])
+            bolt_shaft();
       }
 
       // tube info
@@ -195,6 +194,12 @@ module extrude_right_straight() {
       translate(v=[(bend_r - tube_r) / 2, -(straight_l - bend_r + tube_r) / 2, 0])
         bolt_hole();
     }
+
+    // assistive bend
+    translate(v=[0, -straight_l / 2, 0])
+      color(c="magenta")
+        rotate_extrude(angle=-90)
+          children();
   }
 }
 
@@ -209,13 +214,13 @@ module extrude_left_straight() {
         union() {
 
           // body
-          color(c="orange")
+          color(c="yellow")
             rotate(a=90, v=[1, 0, 0])
               linear_extrude(height=straight_l, center=true)
                 children();
 
           // bolt shaft
-          color(c="yellow")
+          color(c="red")
             translate(v=[(bend_r - tube_r) / 2, (straight_l - bend_r + tube_r) / 2, 0])
               bolt_shaft();
         }
@@ -228,5 +233,11 @@ module extrude_left_straight() {
         translate(v=[(bend_r - tube_r) / 2, (straight_l - bend_r + tube_r) / 2, 0])
           bolt_hole();
       }
+
+      // assistive bend
+      translate(v=[0, straight_l / 2, 0])
+        color(c="cyan")
+          rotate_extrude(angle=90)
+            children();
     }
 }
