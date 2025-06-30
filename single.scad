@@ -10,10 +10,10 @@ top = false;
 tube_r = 8;
 
 // bend to tube center
-bend_r = 30;
-bend_a = 45;
+bend_r = 20;
+bend_a = 90;
 
-// length of straights from centre of bend
+// distance between centres of bends
 straight_l = 80;
 
 // lower skirt
@@ -198,7 +198,7 @@ module extrude_right_straight() {
     // assistive bend
     translate(v=[0, -straight_l / 2, 0])
       color(c="magenta")
-        rotate_extrude(angle=-90)
+        rotate_extrude(angle=-270)
           children();
   }
 }
@@ -237,7 +237,7 @@ module extrude_left_straight() {
       // assistive bend
       translate(v=[0, straight_l / 2, 0])
         color(c="cyan")
-          rotate_extrude(angle=90)
+          rotate_extrude(angle=270)
             children();
     }
 }
