@@ -27,8 +27,8 @@ lip_r = 1.5;
 wall_w = lip_r * 2;
 
 // bolt and nut, M3
-bolt_r = 1.5 * 1.02;
-nut_w = 5.5 * 1.02;
+bolt_r = 1.5 * 1.1;
+nut_w = 5.5 * 1.03;
 nut_d = 4;
 
 // text size and depth; maybe need to move to skirt
