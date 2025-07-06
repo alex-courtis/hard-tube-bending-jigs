@@ -1,6 +1,6 @@
 $fn = 200;
 
-// bottom or top
+// or bottom
 top = false;
 
 // outer
@@ -15,15 +15,11 @@ bend_angle = 90; // [0:1:180]
 // distance between centres of bends
 straight_l = 80;
 
-// lower skirt
-skirt_r = bend_radius + 2 * tube_radius;
-skirt_h = 1.5;
+// skirt, top and sides thickness, lip radii
+wall_width = 1.5; // [0:0.1:5]
 
-// upper lip
-lip_r = 1.5; // [0.5:0.1:5]
-
-// wall thickness
-wall_w = lip_r * 2;
+// of bend radius
+skirt_radius_multiplier = 2; // [1:0.1:3]
 
 // default M3
 bolt_radius = 1.5; // [0.5:0.1:10]
@@ -32,10 +28,10 @@ bolt_radius = 1.5; // [0.5:0.1:10]
 bolt_radius_multiplier = 1.1; // [1:0.01:2]
 
 // nut width, default M3
-nut_width = 5.5 * 1.03; // [1:0.1:10]
+nut_diameter = 5.5 * 1.03; // [1:0.1:10]
 
 // nut hole width multiplier
-nut_width_multiplier = 1.03; // [1:0.01:2]
+nut_hole_multiplier = 1.03; // [1:0.01:2]
 
 // nut depth, default M3
 nut_depth = 4; // [0:0.1:20]
@@ -47,11 +43,13 @@ text_pt = 7; // [4:1:50]
 text_depth = 1; // [0:0.1:10]
 
 // derived
+skirt_radius = bend_radius * skirt_radius_multiplier;
 bolt_hole_radius = bolt_radius * bolt_radius_multiplier;
-nut_hole_w = nut_width * nut_width_multiplier;
+nut_hole_diameter = nut_diameter * nut_hole_multiplier;
 
+echo(skirt_radius=skirt_radius);
 echo(bolt_hole_radius=bolt_hole_radius);
-echo(nut_hole_w=nut_hole_w);
+echo(nut_hole_diameter=nut_hole_diameter);
 
 // entire piece
 if (top) {
@@ -75,18 +73,18 @@ if (top) {
 module cross_section_bottom() {
 
   // bottom skirt
-  square([skirt_r, skirt_h], center=false);
+  square([skirt_radius, wall_width], center=false);
 
   // body
   difference() {
-    square([bend_radius, skirt_h + tube_radius], center=false);
+    square([bend_radius, wall_width + tube_radius], center=false);
 
     // hollow
-    translate(v=[wall_w, wall_w, 0])
-      square([bend_radius - tube_radius - 2 * wall_w, tube_radius + skirt_h - wall_w], center=false);
+    translate(v=[wall_width, wall_width, 0])
+      square([bend_radius - tube_radius - 2 * wall_width, tube_radius + wall_width - wall_width], center=false);
 
     // tube hollow
-    translate(v=[bend_radius, skirt_h + tube_radius, 0])
+    translate(v=[bend_radius, wall_width + tube_radius, 0])
       circle(r=tube_radius);
   }
 }
@@ -94,20 +92,20 @@ module cross_section_bottom() {
 module cross_section_top() {
 
   // top lip
-  translate(v=[bend_radius, lip_r, 0])
-    circle(r=lip_r);
+  translate(v=[bend_radius, wall_width, 0])
+    circle(r=wall_width);
 
   difference() {
 
     // outer
-    square([bend_radius, tube_radius + lip_r * 2], center=false);
+    square([bend_radius, tube_radius + wall_width * 2], center=false);
 
     // hollow
-    translate(v=[wall_w, wall_w, 0])
-      square([bend_radius - tube_radius - 2 * wall_w, tube_radius + lip_r * 2 - wall_w], center=false);
+    translate(v=[wall_width, wall_width, 0])
+      square([bend_radius - tube_radius - 2 * wall_width, tube_radius + wall_width * 2 - wall_width], center=false);
 
     // tube hollow
-    translate(v=[bend_radius, tube_radius + lip_r * 2, 0])
+    translate(v=[bend_radius, tube_radius + wall_width * 2, 0])
       circle(r=tube_radius);
   }
 }
@@ -116,9 +114,9 @@ module bolt_shaft() {
 
   // full height
   if (top) {
-    cylinder(h=tube_radius + lip_r * 2, r=bolt_hole_radius + wall_w, center=false);
+    cylinder(h=tube_radius + wall_width * 2, r=bolt_hole_radius + wall_width, center=false);
   } else {
-    cylinder(h=tube_radius + skirt_h, r=bolt_hole_radius + wall_w, center=false);
+    cylinder(h=tube_radius + wall_width, r=bolt_hole_radius + wall_width, center=false);
   }
 }
 
@@ -126,7 +124,7 @@ module bolt_hole() {
 
   // hole
   color(c="pink")
-    cylinder(h=skirt_h + tube_radius * 2 + lip_r * 2, r=bolt_hole_radius, center=false);
+    cylinder(h=wall_width + tube_radius * 2 + wall_width * 2, r=bolt_hole_radius, center=false);
 
   // captive nut
   if (!top) {
@@ -139,7 +137,7 @@ module straight_text(text) {
   translate(v=[bend_radius / 2, (bend_radius - straight_l) / 2, text_depth])
     rotate(a=90, v=[0, 0, 1])
       rotate(a=180, v=[1, 0, 0])
-        linear_extrude(height=text_d, center=false)
+        linear_extrude(height=text_depth, center=false)
           text(size=text_pt, text=text);
 }
 
