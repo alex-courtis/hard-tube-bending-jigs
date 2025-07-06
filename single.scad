@@ -1,3 +1,7 @@
+// TODO 
+// inset bolt
+// replace assistive bends with simple grooves
+
 $fn = 200;
 
 // or bottom
@@ -22,13 +26,13 @@ wall_width = 1.5; // [0:0.1:5]
 skirt_radius_multiplier = 2; // [1:0.1:3]
 
 // default M3
-bolt_radius = 1.5; // [0.5:0.1:10]
+bolt_diameter = 3; // [2:0.1:10]
 
 // bolt hole size multiplier
 bolt_radius_multiplier = 1.1; // [1:0.01:2]
 
-// nut width, default M3
-nut_diameter = 5.5 * 1.03; // [1:0.1:10]
+// default M3
+nut_width = 5.5; // [1:0.1:10]
 
 // nut hole width multiplier
 nut_hole_multiplier = 1.03; // [1:0.01:2]
@@ -44,13 +48,11 @@ text_depth = 1; // [0:0.1:10]
 
 // derived
 skirt_radius = bend_radius * skirt_radius_multiplier;
-bolt_hole_radius = bolt_radius * bolt_radius_multiplier;
-nut_hole_diameter = nut_diameter * nut_hole_multiplier;
-
-// TODO increase shaft to match nut
+bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;
+nut_hole_diameter = nut_width * nut_hole_multiplier * 2 / sqrt(3);
 
 echo(skirt_radius=skirt_radius);
-echo(bolt_hole_radius=bolt_hole_radius);
+echo(bolt_hole_diameter=bolt_hole_diameter);
 echo(nut_hole_diameter=nut_hole_diameter);
 
 // entire piece
@@ -125,27 +127,21 @@ module cross_section_top() {
   }
 }
 
+// the nut will be aligned with the long edge thus we have walls
 module bolt_shaft() {
-
-  translate(v=[0, 0, wall_width]) {
-    if (top) {
-      cylinder(h=tube_radius, r=bolt_hole_radius + wall_width, center=false);
-    } else {
-      cylinder(h=tube_radius, r=bolt_hole_radius + wall_width, center=false);
-    }
-  }
+  cube([bend_radius - tube_radius - 2 * wall_width, nut_hole_diameter, tube_radius], center=false);
 }
 
 module bolt_hole() {
 
   // hole
   color(c="pink")
-    cylinder(h=wall_width + tube_radius * 2 + wall_width * 2, r=bolt_hole_radius, center=false);
+    cylinder(h=wall_width + tube_radius * 2 + wall_width * 2, d=bolt_hole_diameter, center=false);
 
   // captive nut
   if (!top) {
     color(c="black")
-      cylinder(h=nut_depth, r=nut_hole_diameter / sqrt(3), center=false, $fn=6);
+      cylinder(h=nut_depth, d=nut_hole_diameter, center=false, $fn=6);
   }
 }
 
@@ -168,10 +164,11 @@ module extrude_bend() {
         rotate_extrude(angle=180 - bend_angle)
           children();
 
-      // bolt shaft closer to centre
+      // fully fill in bolt shaft
       color(c="red")
-        translate([(bend_radius - tube_radius) / 2 * cos((180 - bend_angle) / 2), (bend_radius - tube_radius) / 2 * sin((180 - bend_angle) / 2), 0])
-          bolt_shaft();
+        translate([0, 0, wall_width])
+          rotate_extrude(angle=180 - bend_angle)
+            square([bend_radius - tube_radius - wall_width, tube_radius], center=false);
     }
 
     // bolt hole
@@ -196,7 +193,7 @@ module extrude_right_straight() {
 
         // bolt shaft
         color(c="red")
-          translate(v=[(bend_radius - tube_radius) / 2, -(straight_l - bend_radius + tube_radius) / 2, 0])
+          translate(v=[wall_width, -straight_l / 2 + nut_hole_diameter, wall_width])
             bolt_shaft();
       }
 
@@ -205,7 +202,7 @@ module extrude_right_straight() {
         straight_text(text=str(tube_radius * 2, "mm Tube"));
 
       // bolt hole
-      translate(v=[(bend_radius - tube_radius) / 2, -(straight_l - bend_radius + tube_radius) / 2, 0])
+      translate(v=[(bend_radius - tube_radius) / 2, -straight_l / 2 + nut_hole_diameter * 1.5, 0])
         bolt_hole();
     }
 
@@ -235,7 +232,7 @@ module extrude_left_straight() {
 
           // bolt shaft
           color(c="red")
-            translate(v=[(bend_radius - tube_radius) / 2, (straight_l - bend_radius + tube_radius) / 2, 0])
+            translate(v=[wall_width, straight_l / 2 - nut_hole_diameter * 2, wall_width])
               bolt_shaft();
         }
 
@@ -244,7 +241,7 @@ module extrude_left_straight() {
           straight_text(text=str(bend_angle, "° ", bend_radius, "mm"));
 
         // bolt hole
-        translate(v=[(bend_radius - tube_radius) / 2, (straight_l - bend_radius + tube_radius) / 2, 0])
+        translate(v=[(bend_radius - tube_radius) / 2, straight_l / 2 - nut_hole_diameter * 1.5, 0])
           bolt_hole();
       }
 
