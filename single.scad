@@ -47,6 +47,8 @@ skirt_radius = bend_radius * skirt_radius_multiplier;
 bolt_hole_radius = bolt_radius * bolt_radius_multiplier;
 nut_hole_diameter = nut_diameter * nut_hole_multiplier;
 
+// TODO increase shaft to match nut
+
 echo(skirt_radius=skirt_radius);
 echo(bolt_hole_radius=bolt_hole_radius);
 echo(nut_hole_diameter=nut_hole_diameter);
@@ -75,13 +77,22 @@ module cross_section_bottom() {
   // bottom skirt
   square([skirt_radius, wall_width], center=false);
 
+  // bottom lip
+  translate(v=[skirt_radius, 0, 0]) {
+    intersection() {
+      square([wall_width, wall_width], center=false);
+
+      circle(r=wall_width);
+    }
+  }
+
   // body
   difference() {
     square([bend_radius, wall_width + tube_radius], center=false);
 
     // hollow
     translate(v=[wall_width, wall_width, 0])
-      square([bend_radius - tube_radius - 2 * wall_width, tube_radius + wall_width - wall_width], center=false);
+      square([bend_radius - tube_radius - 2 * wall_width, tube_radius], center=false);
 
     // tube hollow
     translate(v=[bend_radius, wall_width + tube_radius, 0])
@@ -92,31 +103,36 @@ module cross_section_bottom() {
 module cross_section_top() {
 
   // top lip
-  translate(v=[bend_radius, wall_width, 0])
-    circle(r=wall_width);
+  translate(v=[bend_radius, 0, 0]) {
+    intersection() {
+      square([wall_width, wall_width], center=false);
+      circle(r=wall_width);
+    }
+  }
 
   difference() {
 
     // outer
-    square([bend_radius, tube_radius + wall_width * 2], center=false);
+    square([bend_radius, tube_radius + wall_width], center=false);
 
     // hollow
     translate(v=[wall_width, wall_width, 0])
-      square([bend_radius - tube_radius - 2 * wall_width, tube_radius + wall_width * 2 - wall_width], center=false);
+      square([bend_radius - tube_radius - 2 * wall_width, tube_radius], center=false);
 
     // tube hollow
-    translate(v=[bend_radius, tube_radius + wall_width * 2, 0])
+    translate(v=[bend_radius, tube_radius + wall_width, 0])
       circle(r=tube_radius);
   }
 }
 
 module bolt_shaft() {
 
-  // full height
-  if (top) {
-    cylinder(h=tube_radius + wall_width * 2, r=bolt_hole_radius + wall_width, center=false);
-  } else {
-    cylinder(h=tube_radius + wall_width, r=bolt_hole_radius + wall_width, center=false);
+  translate(v=[0, 0, wall_width]) {
+    if (top) {
+      cylinder(h=tube_radius, r=bolt_hole_radius + wall_width, center=false);
+    } else {
+      cylinder(h=tube_radius, r=bolt_hole_radius + wall_width, center=false);
+    }
   }
 }
 
@@ -128,8 +144,8 @@ module bolt_hole() {
 
   // captive nut
   if (!top) {
-    color(c="red")
-      cylinder(h=nut_depth, r=nut_hole_w / sqrt(3), center=false, $fn=6);
+    color(c="black")
+      cylinder(h=nut_depth, r=nut_hole_diameter / sqrt(3), center=false, $fn=6);
   }
 }
 
