@@ -1,6 +1,3 @@
-// TODO 
-// replace assistive bends with simple grooves
-
 $fn = 200;
 
 // or bottom
@@ -197,12 +194,12 @@ module extrude_right_straight() {
 
         // bolt shaft, wall width gap for printing seam difficulties and tongue
         color(c="red")
-          translate(v=[wall_width, -straight_l / 2, wall_width * 2])
+          translate(v=[wall_width, -straight_l / 2, wall_width])
             cube(
               [
                 bend_radius - tube_radius - 2 * wall_width,
                 bend_radius - tube_radius - 2 * wall_width,
-                tube_radius - wall_width * 2,
+                tube_radius - wall_width,
               ], center=false
             );
       }
@@ -215,12 +212,6 @@ module extrude_right_straight() {
       translate(v=[(bend_radius - tube_radius) / 2, -straight_l / 2 + nut_hole_diameter / 2 + wall_width, 0])
         bolt_hole();
     }
-
-    // assistive bend
-    translate(v=[0, -straight_l / 2, 0])
-      color(c="magenta")
-        rotate_extrude(angle=-270)
-          children();
   }
 }
 
@@ -242,12 +233,12 @@ module extrude_left_straight() {
 
           // bolt shaft
           color(c="red")
-            translate(v=[wall_width, straight_l / 2 - (bend_radius - tube_radius - 2 * wall_width), wall_width * 2])
+            translate(v=[wall_width, straight_l / 2 - (bend_radius - tube_radius - 2 * wall_width), wall_width])
               cube(
                 [
                   bend_radius - tube_radius - 2 * wall_width,
                   bend_radius - tube_radius - 2 * wall_width,
-                  tube_radius - wall_width * 2,
+                  tube_radius - wall_width,
                 ], center=false
               );
         }
@@ -260,11 +251,5 @@ module extrude_left_straight() {
         translate(v=[(bend_radius - tube_radius) / 2, straight_l / 2 - nut_hole_diameter / 2 - wall_width, 0])
           bolt_hole();
       }
-
-      // assistive bend
-      translate(v=[0, straight_l / 2, 0])
-        color(c="cyan")
-          rotate_extrude(angle=270)
-            children();
     }
 }
