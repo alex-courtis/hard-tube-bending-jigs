@@ -53,9 +53,15 @@ skirt_radius = bend_radius * skirt_radius_multiplier;
 bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;
 nut_hole_diameter = nut_width * nut_hole_multiplier * 2 / sqrt(3);
 
+channel_width = bend_radius - tube_radius - 2 * wall_width;
+channel_height = tube_radius - wall_width;
+
 echo(skirt_radius=skirt_radius);
 echo(bolt_hole_diameter=bolt_hole_diameter);
 echo(nut_hole_diameter=nut_hole_diameter);
+
+echo(channel_width=channel_width);
+echo(channel_height=channel_height);
 
 // entire piece
 if (top) {
@@ -72,6 +78,7 @@ if (top) {
       extrude_straight(text=str(bend_angle, "° ", bend_radius, "mm"))
         cross_section_top();
 } else {
+
   extrude_bend()
     cross_section_bottom();
 
@@ -105,7 +112,7 @@ module cross_section_bottom() {
 
     // hollow
     translate(v=[wall_width, wall_width, 0])
-      square([bend_radius - tube_radius - 2 * wall_width, tube_radius], center=false);
+      square([channel_width, channel_height + wall_width], center=false);
 
     // tube hollow
     translate(v=[bend_radius, wall_width + tube_radius, 0])
@@ -128,9 +135,9 @@ module cross_section_top() {
     // outer
     square([bend_radius, tube_radius + wall_width], center=false);
 
-    // hollow
+    // channel
     translate(v=[wall_width, wall_width, 0])
-      square([bend_radius - tube_radius - 2 * wall_width, tube_radius], center=false);
+      square([channel_width, channel_height + wall_width], center=false);
 
     // tube hollow
     translate(v=[bend_radius, tube_radius + wall_width, 0])
@@ -172,10 +179,7 @@ module extrude_bend() {
 }
 
 module extrude_straight(text) {
-  channel_width = bend_radius - tube_radius - 2 * wall_width;
-  channel_height = tube_radius - wall_width;
-
-  brace_length = nut_hole_diameter + 2 * wall_width;
+  shaft_width = nut_hole_diameter + 2 * wall_width;
 
   difference() {
 
@@ -189,11 +193,11 @@ module extrude_straight(text) {
 
       // bolt shafts
       color(c="darkblue")
-        translate(v=[wall_width, straight_l / 2 - brace_length, wall_width])
-          cube([channel_width, brace_length, channel_height], center=false);
+        translate(v=[wall_width, straight_l / 2 - shaft_width, wall_width])
+          cube([channel_width, shaft_width, channel_height], center=false);
       color(c="steelblue")
         translate(v=[wall_width, -straight_l / 2, wall_width])
-          cube([channel_width, brace_length, channel_height], center=false);
+          cube([channel_width, shaft_width, channel_height], center=false);
     }
 
     // bend info
@@ -201,10 +205,9 @@ module extrude_straight(text) {
       straight_text(text=text);
 
     // bolt holes
-    translate(v=[wall_width + channel_width / 2, straight_l / 2 - brace_length / 2, 0])
+    translate(v=[wall_width + channel_width / 2, straight_l / 2 - shaft_width / 2, 0])
       bolt_hole();
-    translate(v=[wall_width + channel_width / 2, -straight_l / 2 + brace_length / 2, 0])
+    translate(v=[wall_width + channel_width / 2, -straight_l / 2 + shaft_width / 2, 0])
       bolt_hole();
   }
 }
-
