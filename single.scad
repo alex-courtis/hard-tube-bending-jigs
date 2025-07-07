@@ -1,5 +1,4 @@
 // TODO 
-// inset bolt
 // replace assistive bends with simple grooves
 
 $fn = 200;
@@ -30,6 +29,12 @@ bolt_diameter = 3; // [2:0.1:10]
 
 // bolt hole size multiplier
 bolt_radius_multiplier = 1.1; // [1:0.01:2]
+
+// optional bolt head inset
+bolt_head_diameter = 6; // [0:0.1:10]
+
+// optional bolt head inset
+bolt_head_depth = 2; // [0:0.1:10]
 
 // default M3
 nut_width = 5.5; // [1:0.1:10]
@@ -133,8 +138,12 @@ module bolt_hole() {
   color(c="pink")
     cylinder(h=wall_width + tube_radius * 2 + wall_width * 2, d=bolt_hole_diameter, center=false);
 
-  // captive nut
-  if (!top) {
+  if (top) {
+    // bolt sink
+    color(c="brown")
+      cylinder(h=bolt_head_depth, d=bolt_head_diameter, center=false);
+  } else {
+    // captive nut
     color(c="black")
       cylinder(h=nut_depth, d=nut_hole_diameter, center=false, $fn=6);
   }
