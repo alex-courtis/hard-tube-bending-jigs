@@ -127,11 +127,6 @@ module cross_section_top() {
   }
 }
 
-// the nut will be aligned with the long edge thus we have walls
-module bolt_shaft() {
-  cube([bend_radius - tube_radius - 2 * wall_width, nut_hole_diameter, tube_radius], center=false);
-}
-
 module bolt_hole() {
 
   // hole
@@ -168,7 +163,7 @@ module extrude_bend() {
       color(c="red")
         translate([0, 0, wall_width])
           rotate_extrude(angle=180 - bend_angle)
-            square([bend_radius - tube_radius - wall_width, tube_radius], center=false);
+            square([bend_radius - tube_radius - wall_width, tube_radius - wall_width], center=false);
     }
 
     // bolt hole
@@ -191,10 +186,16 @@ module extrude_right_straight() {
             linear_extrude(height=straight_l, center=true)
               children();
 
-        // bolt shaft
+        // bolt shaft, wall width gap for printing seam difficulties and tongue
         color(c="red")
-          translate(v=[wall_width, -straight_l / 2 + nut_hole_diameter, wall_width])
-            bolt_shaft();
+          translate(v=[wall_width, -straight_l / 2, wall_width * 2])
+            cube(
+              [
+                bend_radius - tube_radius - 2 * wall_width,
+                bend_radius - tube_radius - 2 * wall_width,
+                tube_radius - wall_width * 2,
+              ], center=false
+            );
       }
 
       // tube info
@@ -202,7 +203,7 @@ module extrude_right_straight() {
         straight_text(text=str(tube_radius * 2, "mm Tube"));
 
       // bolt hole
-      translate(v=[(bend_radius - tube_radius) / 2, -straight_l / 2 + nut_hole_diameter * 1.5, 0])
+      translate(v=[(bend_radius - tube_radius) / 2, -straight_l / 2 + nut_hole_diameter / 2 + wall_width, 0])
         bolt_hole();
     }
 
@@ -232,8 +233,14 @@ module extrude_left_straight() {
 
           // bolt shaft
           color(c="red")
-            translate(v=[wall_width, straight_l / 2 - nut_hole_diameter * 2, wall_width])
-              bolt_shaft();
+            translate(v=[wall_width, straight_l / 2 - (bend_radius - tube_radius - 2 * wall_width), wall_width * 2])
+              cube(
+                [
+                  bend_radius - tube_radius - 2 * wall_width,
+                  bend_radius - tube_radius - 2 * wall_width,
+                  tube_radius - wall_width * 2,
+                ], center=false
+              );
         }
 
         // bend info
@@ -241,7 +248,7 @@ module extrude_left_straight() {
           straight_text(text=str(bend_angle, "° ", bend_radius, "mm"));
 
         // bolt hole
-        translate(v=[(bend_radius - tube_radius) / 2, straight_l / 2 - nut_hole_diameter * 1.5, 0])
+        translate(v=[(bend_radius - tube_radius) / 2, straight_l / 2 - nut_hole_diameter / 2 - wall_width, 0])
           bolt_hole();
       }
 
