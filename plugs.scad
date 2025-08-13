@@ -1,14 +1,14 @@
-d_tube = 10; // [1:0.01:50]
-h_tube = 20; // [1:0.1:50]
+d_tube = 11.85; // [1:0.01:50]
+h_tube = 15; // [1:0.1:50]
 
-d_connector_male = 4; // [0:0.01:50]
-d_connector_female = 4.1; // [0:0.01:50]
+d_connector_male = 5; // [0:0.01:50]
+d_connector_female = 5.2; // [0:0.01:50]
 
-dd_flange = 4; // [0:0.01:50]
-h_flange = 2; // [0:0.01:50]
+dd_flange = 5; // [0:0.01:50]
+h_flange = 1.2; // [0:0.01:50]
 
-d_socket = 8; // [1:0.01:50]
-h_socket = 4; // [1:0.1:50]
+d_socket = 10; // [1:0.01:50]
+h_socket = 12; // [1:0.1:50]
 
 $fn = 400;
 
