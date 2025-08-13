@@ -1,18 +1,37 @@
-d_tube_inner = 8; // [1:0.01:50]
-h_tube = 8; // [1:0.1:50]
+d_tube = 10; // [1:0.01:50]
+h_tube = 20; // [1:0.1:50]
 
-d_socket = 4; // [1:0.01:50]
+d_connector = 4; // [0:0.01:50]
+
+dd_flange = 4; // [0:0.01:50]
+h_flange = 2; // [0:0.01:50]
+
+d_socket = 8; // [1:0.01:50]
 h_socket = 4; // [1:0.1:50]
 
-d_hole = 2; // [0:0.1:50]
+$fn = 400;
 
-$fn = 200;
+render() {
 
-render()
-  difference() {
-    union() {
-      cylinder(d=d_tube_inner, h=h_tube);
-      cylinder(d=d_socket, h=h_tube + h_socket);
+  // tube with male connector
+  color(c="blue") {
+    translate(v=[0, -d_tube, 0]) {
+      cylinder(d=d_tube, h=h_tube);
+      cylinder(d=d_connector, h=h_socket + h_flange + h_tube);
     }
-    cylinder(d=d_hole, h=h_tube + h_socket);
   }
+
+  // socket with female connector and flange
+  translate(v=[0, d_socket + dd_flange]) {
+    color(c="green") {
+      difference() {
+        union() {
+          translate(v=[0, 0, h_flange])
+            cylinder(d=d_socket, h=h_socket);
+          cylinder(d=d_socket + dd_flange, h=h_flange);
+        }
+        cylinder(d=d_connector, h=h_socket + h_flange);
+      }
+    }
+  }
+}
