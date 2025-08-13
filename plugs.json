@@ -3,16 +3,18 @@
     "parameterSets": {
         "thread": {
             "$fn": "400",
-            "d_connector": "5",
+            "d_connector_male": "5",
+            "d_connector_female": "5.2000000000000002",
             "d_socket": "11.4",
             "d_tube": "11.85",
-            "dd_flange": "5",
+            "dd_flange": "7",
             "h_socket": "6.2000000000000002",
             "h_tube": "15"
         },
         "fitting": {
             "$fn": "400",
-            "d_connector": "5",
+            "d_connector_male": "5",
+            "d_connector_female": "5.2000000000000002",
             "d_socket": "9.4499999999999993",
             "d_tube": "11.85",
             "dd_flange": "4",
