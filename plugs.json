@@ -3,25 +3,25 @@
     "parameterSets": {
         "thread": {
             "$fn": "400",
-            "d_connector_female": "3.8000000000000003",
-            "d_connector_male": "3.6000000000000001",
+            "d_rod_inner": "3.8999999999999999",
+            "d_rod_outer": "3.9500000000000002",
             "d_socket": "11.4",
             "d_tube": "11.85",
-            "dd_flange_socket": "8",
-            "dd_flange_tube": "6",
-            "h_flange": "1.2",
+            "dd_flange_socket": "8.5999999999999996",
+            "dd_flange_tube": "8.1500000000000004",
+            "h_flange": "2",
             "h_socket": "6.2000000000000002",
             "h_tube": "15"
         },
         "fitting": {
             "$fn": "400",
-            "d_connector_female": "3.8999999999999999",
-            "d_connector_male": "3.7000000000000002",
+            "d_rod_inner": "3.8999999999999999",
+            "d_rod_outer": "3.9500000000000002",
             "d_socket": "9.4000000000000004",
             "d_tube": "11.85",
-            "dd_flange_socket": "5",
-            "dd_flange_tube": "6",
-            "h_flange": "1.2",
+            "dd_flange_socket": "10.6",
+            "dd_flange_tube": "8.1500000000000004",
+            "h_flange": "2",
             "h_socket": "12.5",
             "h_tube": "15"
         }
