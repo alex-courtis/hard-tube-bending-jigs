@@ -3,15 +3,15 @@
     "parameterSets": {
         "thread": {
             "$fn": "400",
-            "d1_flange_socket": "23",
+            "d1_flange_socket": "30",
             "d1_flange_tube": "23",
-            "d2_flange_socket": "20",
-            "d2_flange_tube": "20",
+            "d2_flange_socket": "28",
+            "d2_flange_tube": "21",
             "d_rod_inner": "3.8999999999999999",
             "d_rod_outer": "3.7749999999999999",
-            "d_socket": "11.4",
+            "d_socket": "11.6",
             "d_tube": "11.85",
-            "h_flange": "3",
+            "h_flange": "2",
             "h_socket": "6.2000000000000002",
             "h_tube": "15"
         },
@@ -19,13 +19,13 @@
             "$fn": "400",
             "d1_flange_socket": "23",
             "d1_flange_tube": "23",
-            "d2_flange_socket": "20",
-            "d2_flange_tube": "20",
+            "d2_flange_socket": "21",
+            "d2_flange_tube": "21",
             "d_rod_inner": "3.8999999999999999",
             "d_rod_outer": "3.7749999999999999",
             "d_socket": "9.4000000000000004",
             "d_tube": "11.85",
-            "h_flange": "3",
+            "h_flange": "2",
             "h_socket": "12.5",
             "h_tube": "15"
         }
