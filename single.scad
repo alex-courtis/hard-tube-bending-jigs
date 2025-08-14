@@ -7,7 +7,7 @@ top = false;
 tube_radius = 8; // [4:1:10]
 
 // to tube centre
-bend_radius = 20; // [10:1:100]
+bend_radius = 20; // [10:0.01:100]
 
 // tube
 bend_angle = 90; // [0:1:180]
@@ -64,18 +64,18 @@ echo(channel_width=channel_width);
 echo(channel_height=channel_height);
 
 // entire piece
-if (top) {
+render() if (top) {
 
   extrude_bend()
     cross_section_top();
 
   translate(v=[0, -straight_l / 2, 0])
-    extrude_straight(str(tube_radius * 2, "mm Tube"))
+    extrude_straight(str(bend_angle, "° ", bend_radius, "mm"))
       cross_section_top();
 
   rotate(a=180 - bend_angle, v=[0, 0, 1])
     translate(v=[0, straight_l / 2, 0])
-      extrude_straight(text=str(bend_angle, "° ", bend_radius, "mm"))
+      extrude_straight(text=str("ø ", tube_radius * 2, "mm"))
         cross_section_top();
 } else {
 
@@ -167,7 +167,7 @@ module straight_text(text) {
     rotate(a=90, v=[0, 0, 1])
       rotate(a=180, v=[1, 0, 0])
         linear_extrude(height=text_depth, center=false)
-          text(font="monospace", size=tube_radius, text=text, halign="center", valign="center");
+          text(size=tube_radius, text=text, halign="center", valign="center");
 }
 
 module extrude_bend() {
