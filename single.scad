@@ -25,7 +25,7 @@ skirt_radius_multiplier = 2; // [1:0.1:3]
 bolt_diameter = 3; // [2:0.1:10]
 
 // bolt hole size multiplier
-bolt_radius_multiplier = 1.1; // [1:0.01:2]
+bolt_radius_multiplier = 0.95; // [0:0.01:2]
 
 // optional bolt head inset
 bolt_head_diameter = 6; // [0:0.1:10]
