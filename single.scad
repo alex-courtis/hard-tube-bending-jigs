@@ -1,7 +1,6 @@
 $fn = 200;
 
-// or bottom
-top = false;
+piece = "both"; // ["both", "top", "bottom"]
 
 // outer
 tube_radius = 8; // [4:1:10]
@@ -25,13 +24,13 @@ skirt_radius_multiplier = 2; // [1:0.1:3]
 bolt_diameter = 3; // [2:0.1:10]
 
 // bolt hole size multiplier
-bolt_radius_multiplier = 0.95; // [0:0.01:2]
+bolt_radius_multiplier = 1.02; // [0:0.01:2]
 
 // optional bolt head inset
 bolt_head_diameter = 6; // [0:0.1:10]
 
 // optional bolt head inset
-bolt_head_depth = 2; // [0:0.1:10]
+bolt_head_depth = 2.5; // [0:0.1:10]
 
 // default M3
 nut_width = 5.5; // [1:0.1:10]
@@ -40,7 +39,7 @@ nut_width = 5.5; // [1:0.1:10]
 nut_hole_multiplier = 1.03; // [1:0.01:2]
 
 // nut depth, default M3
-nut_depth = 4; // [0:0.1:20]
+nut_depth = 4.5; // [0:0.1:20]
 
 // size
 text_pt = 7; // [4:1:50]
@@ -64,7 +63,7 @@ echo(channel_width=channel_width);
 echo(channel_height=channel_height);
 
 // entire piece
-render() if (top) {
+render() if (piece != "bottom") {
 
   extrude_bend()
     cross_section_top();
@@ -77,19 +76,23 @@ render() if (top) {
     translate(v=[0, straight_l / 2, 0])
       extrude_straight(text=str("ø ", tube_radius * 2, "mm"))
         cross_section_top();
-} else {
+}
 
-  extrude_bend()
-    cross_section_bottom();
+render() if (piece != "top") {
 
-  translate(v=[0, -straight_l / 2, 0])
-    extrude_straight()
+  translate(v=[straight_l + bend_radius + wall_width, straight_l + bend_radius + wall_width, 0]) {
+    extrude_bend()
       cross_section_bottom();
 
-  rotate(a=180 - bend_angle, v=[0, 0, 1])
-    translate(v=[0, straight_l / 2, 0])
+    translate(v=[0, -straight_l / 2, 0])
       extrude_straight()
         cross_section_bottom();
+
+    rotate(a=180 - bend_angle, v=[0, 0, 1])
+      translate(v=[0, straight_l / 2, 0])
+        extrude_straight()
+          cross_section_bottom();
+  }
 }
 
 module cross_section_bottom() {
@@ -145,7 +148,7 @@ module cross_section_top() {
   }
 }
 
-module bolt_hole() {
+module bolt_hole(top) {
 
   // hole
   color(c="black")
@@ -206,8 +209,8 @@ module extrude_straight(text) {
 
     // bolt holes
     translate(v=[wall_width + channel_width / 2, straight_l / 2 - shaft_width / 2, 0])
-      bolt_hole();
+      bolt_hole(top=text);
     translate(v=[wall_width + channel_width / 2, -straight_l / 2 + shaft_width / 2, 0])
-      bolt_hole();
+      bolt_hole(top=text);
   }
 }
