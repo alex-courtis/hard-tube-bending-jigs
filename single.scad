@@ -41,6 +41,12 @@ nut_hole_multiplier = 1.03; // [1:0.01:2]
 // nut depth, default M3
 nut_depth = 4.5; // [0:0.1:20]
 
+// above channel, applied to wall width
+flange_height_multiplier = 0.5; // [0:0.1:1]
+
+// applied to wall width
+flange_width_multiplier = 1; // [0:0.1:5]
+
 // size
 text_pt = 7; // [4:1:50]
 
@@ -152,7 +158,7 @@ module bolt_hole(top) {
 
   // hole
   color(c="black")
-    cylinder(h=wall_width + tube_radius, d=bolt_hole_diameter, center=false);
+    cylinder(h=wall_width * 2 + tube_radius, d=bolt_hole_diameter, center=false);
 
   if (top) {
     // bolt sink
@@ -181,6 +187,23 @@ module extrude_bend() {
       children();
 }
 
+module shaft(y, dy, flange) {
+  translate(v=[wall_width, dy, wall_width]) {
+    cube([channel_width, y, channel_height], center=false);
+
+    if (flange) {
+      x = wall_width * flange_width_multiplier;
+      z = channel_height + wall_width * (1 + flange_height_multiplier);
+
+      cube([x, y, z], center=false);
+
+      translate(v=[channel_width - wall_width * flange_width_multiplier, 0, 0])
+        cube([x, y, z], center=false);
+    }
+  }
+}
+
+// text implies top
 module extrude_straight(text) {
   shaft_width = nut_hole_diameter + 2 * wall_width;
 
@@ -196,11 +219,9 @@ module extrude_straight(text) {
 
       // bolt shafts
       color(c="darkblue")
-        translate(v=[wall_width, straight_l / 2 - shaft_width, wall_width])
-          cube([channel_width, shaft_width, channel_height], center=false);
+        shaft(y=shaft_width, dy=straight_l / 2 - shaft_width, flange=text);
       color(c="steelblue")
-        translate(v=[wall_width, -straight_l / 2, wall_width])
-          cube([channel_width, shaft_width, channel_height], center=false);
+        shaft(y=shaft_width, dy=-straight_l / 2, flange=text);
     }
 
     // bend info
