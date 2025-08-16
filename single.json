@@ -54,6 +54,27 @@
             "text_pt": "7",
             "tube_radius": "8",
             "wall_width": "1.2000000000000002"
+        },
+        "16-0-20.5-100": {
+            "$fn": "200",
+            "bend_angle": "0",
+            "bend_radius": "20.5",
+            "bend_shaft_angle": "15",
+            "bolt_diameter": "3",
+            "bolt_head_depth": "2.5",
+            "bolt_head_diameter": "6",
+            "bolt_radius_multiplier": "1.02",
+            "flange_height_multiplier": "0.5",
+            "flange_width_multiplier": "1",
+            "nut_depth": "4.5",
+            "nut_hole_multiplier": "1.03",
+            "nut_width": "5.5",
+            "skirt_radius_multiplier": "1.6000000000000001",
+            "straight_l": "100",
+            "text_depth": "0.59999999999999998",
+            "text_pt": "7",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
         }
     }
 }

@@ -10,10 +10,10 @@ bend_radius = 20; // [10:0.01:100]
 bend_angle = 90; // [0:1:180]
 
 // distance between centres of bends
-straight_l = 80;
+straight_l = 80; // [10:1:1000]
 
 // skirt, top and sides thickness, lip radii
-wall_width = 1.5; // [0:0.1:5]
+wall_width = 1.6; // [0:0.1:5]
 
 // of bend radius
 skirt_radius_multiplier = 2; // [1:0.1:3]
@@ -45,6 +45,9 @@ flange_height_multiplier = 0.5; // [0:0.1:1]
 // applied to wall width
 flange_width_multiplier = 1; // [0:0.1:5]
 
+// shaft with no hole
+bend_shaft_angle = 15; // [0:1:180]
+
 // size
 text_pt = 7; // [4:1:50]
 
@@ -74,7 +77,7 @@ render() {
 }
 
 module top() {
-  extrude_bend()
+  extrude_bend(top=true)
     cross_section_top();
 
   translate(v=[0, -straight_l / 2, 0])
@@ -182,40 +185,33 @@ module straight_text(text, text_mirror) {
             text(size=tube_radius, text=text, halign="center", valign="center");
 }
 
-module extrude_bend() {
+module extrude_bend(top) {
 
   // body
   color(c="lightgray")
     rotate_extrude(angle=180 - bend_angle)
       children();
+
+  // shaft
+  shaft_start = max((180 - bend_angle) / 2 - bend_shaft_angle, 0);
+  shaft_end = min(bend_shaft_angle * 2, (180 - bend_angle));
+  color(c="royalblue")
+    rotate_extrude(start=shaft_start, angle=shaft_end)
+      cross_section_shaft(flange_inner=false, flange_outer=true);
 }
 
-module shaft(y, dy, flange) {
-  translate(v=[wall_width, dy, wall_width]) {
-    cube([channel_width, y, channel_height], center=false);
-
-    if (flange) {
-      x = wall_width * flange_width_multiplier;
-      z = channel_height + wall_width * (1 + flange_height_multiplier);
-
-      cube([x, y, z], center=false);
-
-      translate(v=[channel_width - wall_width * flange_width_multiplier, 0, 0])
-        cube([x, y, z], center=false);
-    }
-  }
-}
-
-module cross_section_shaft(flange) {
+module cross_section_shaft(flange_inner, flange_outer) {
   translate(v=[wall_width, wall_width, 0]) {
     square([channel_width, channel_height], center=false);
 
-    if (flange) {
-      y = wall_width * flange_width_multiplier;
-      z = channel_height + wall_width * (1 + flange_height_multiplier);
+    y = wall_width * flange_width_multiplier;
+    z = channel_height + wall_width * (1 + flange_height_multiplier);
 
+    if (flange_inner) {
       square([y, z], center=false);
+    }
 
+    if (flange_outer) {
       translate(v=[channel_width - y, 0])
         square([y, z], center=false);
     }
@@ -243,13 +239,13 @@ module extrude_straight(text, text_mirror) {
         color(c="steelblue")
           translate(v=[0, 0, -hole1_dy])
             linear_extrude(height=bolt_hole_diameter * 2, center=true)
-              cross_section_shaft(flange=text);
+              cross_section_shaft(flange_inner=text, flange_outer=text);
 
         // bolt shaft near end
         color(c="darkblue")
           translate(v=[0, 0, -hole2_dy])
             linear_extrude(height=bolt_hole_diameter * 2, center=true)
-              cross_section_shaft(flange=text);
+              cross_section_shaft(flange_inner=text, flange_outer=text);
       }
     }
 
