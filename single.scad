@@ -1,7 +1,5 @@
 $fn = 200;
 
-piece = "both"; // ["both", "top", "bottom"]
-
 // outer
 tube_radius = 8; // [4:1:10]
 
@@ -51,7 +49,7 @@ flange_width_multiplier = 1; // [0:0.1:5]
 text_pt = 7; // [4:1:50]
 
 // inset
-text_depth = 1; // [0:0.1:10]
+text_depth = 0.6; // [0:0.1:10]
 
 // derived
 skirt_radius = bend_radius * skirt_radius_multiplier;
@@ -68,9 +66,14 @@ echo(nut_hole_diameter=nut_hole_diameter);
 echo(channel_width=channel_width);
 echo(channel_height=channel_height);
 
-// entire piece
-render() if (piece != "bottom") {
+render() {
+  top();
 
+  translate(v=[straight_l + bend_radius + wall_width, straight_l + bend_radius + wall_width, 0])
+    bottom();
+}
+
+module top() {
   extrude_bend()
     cross_section_top();
 
@@ -84,21 +87,18 @@ render() if (piece != "bottom") {
         cross_section_top();
 }
 
-render() if (piece != "top") {
+module bottom() {
+  extrude_bend()
+    cross_section_bottom();
 
-  translate(v=[straight_l + bend_radius + wall_width, straight_l + bend_radius + wall_width, 0]) {
-    extrude_bend()
+  translate(v=[0, -straight_l / 2, 0])
+    extrude_straight()
       cross_section_bottom();
 
-    translate(v=[0, -straight_l / 2, 0])
+  rotate(a=180 - bend_angle, v=[0, 0, 1])
+    translate(v=[0, straight_l / 2, 0])
       extrude_straight()
         cross_section_bottom();
-
-    rotate(a=180 - bend_angle, v=[0, 0, 1])
-      translate(v=[0, straight_l / 2, 0])
-        extrude_straight()
-          cross_section_bottom();
-  }
 }
 
 module cross_section_bottom() {

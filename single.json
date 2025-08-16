@@ -12,13 +12,12 @@
             "nut_depth": "4.5",
             "nut_hole_multiplier": "1.03",
             "nut_width": "5.5",
-            "piece": "both",
             "skirt_radius_multiplier": "1.3999999999999999",
             "straight_l": "100",
-            "text_depth": "1",
+            "text_depth": "0.60000000000000009",
             "text_pt": "7",
             "tube_radius": "8",
-            "wall_width": "1.5"
+            "wall_width": "1.2000000000000002"
         },
         "16-0-42.05-150": {
             "$fn": "200",
@@ -31,13 +30,12 @@
             "nut_depth": "4.5",
             "nut_hole_multiplier": "1.03",
             "nut_width": "5.5",
-            "piece": "both",
             "skirt_radius_multiplier": "1.3999999999999999",
             "straight_l": "150",
-            "text_depth": "1",
+            "text_depth": "0.60000000000000009",
             "text_pt": "7",
             "tube_radius": "8",
-            "wall_width": "1.5"
+            "wall_width": "1.2000000000000002"
         },
         "16-90-42.05-150": {
             "$fn": "200",
@@ -50,13 +48,12 @@
             "nut_depth": "4.5",
             "nut_hole_multiplier": "1.03",
             "nut_width": "5.5",
-            "piece": "both",
             "skirt_radius_multiplier": "1.3999999999999999",
             "straight_l": "150",
-            "text_depth": "1",
+            "text_depth": "0.60000000000000009",
             "text_pt": "7",
             "tube_radius": "8",
-            "wall_width": "1.5"
+            "wall_width": "1.2000000000000002"
         }
     }
 }
