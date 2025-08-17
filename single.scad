@@ -15,7 +15,7 @@ straight_l = 80; // [10:1:1000]
 // skirt, top and sides thickness, lip radii
 wall_width = 1.6; // [0:0.1:5]
 
-// of bend radius
+// of tube radius in addition to bend_radius
 skirt_radius_multiplier = 2; // [1:0.1:3]
 
 // default M3
@@ -52,7 +52,7 @@ text_height = 8; // [4:1:50]
 text_depth = 0.6; // [0:0.1:10]
 
 // derived
-skirt_radius = bend_radius * skirt_radius_multiplier;
+skirt_radius = bend_radius + tube_radius * skirt_radius_multiplier;
 bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;
 nut_inset_diameter = nut_width * nut_inset_multiplier * 2 / sqrt(3);
 
@@ -79,13 +79,13 @@ module top() {
     cross_section_top();
 
   translate(v=[0, -straight_l / 2, 0])
-    extrude_straight(str(bend_angle, "° ", bend_radius, "mm"), text_mirror=false)
+    extrude_straight(str("R", bend_radius, "   ", bend_angle, "°"), text_mirror=false)
       cross_section_top();
 
   rotate(a=180 - bend_angle, v=[0, 0, 1])
     translate(v=[0, straight_l / 2, 0])
       mirror([0, 1, 0])
-        extrude_straight(text=str("ø ", tube_radius * 2, "mm"), text_mirror=true)
+        extrude_straight(text=str("ø", tube_radius * 2, "   L", straight_l), text_mirror=true)
           cross_section_top();
 }
 
