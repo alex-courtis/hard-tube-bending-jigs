@@ -25,16 +25,16 @@ bolt_diameter = 3; // [2:0.1:10]
 bolt_radius_multiplier = 1.02; // [0:0.01:2]
 
 // optional bolt head inset
-bolt_head_diameter = 6; // [0:0.1:10]
+bolt_inset_diameter = 6; // [0:0.1:10]
 
 // optional bolt head inset
-bolt_head_depth = 2.5; // [0:0.1:10]
+bolt_inset_depth = 2.5; // [0:0.1:10]
 
 // default M3
 nut_width = 5.5; // [1:0.1:10]
 
 // nut hole width multiplier
-nut_hole_multiplier = 1.03; // [1:0.01:2]
+nut_inset_multiplier = 1.03; // [1:0.01:2]
 
 // nut depth, default M3
 nut_depth = 4.5; // [0:0.1:20]
@@ -57,14 +57,15 @@ text_depth = 0.6; // [0:0.1:10]
 // derived
 skirt_radius = bend_radius * skirt_radius_multiplier;
 bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;
-nut_hole_diameter = nut_width * nut_hole_multiplier * 2 / sqrt(3);
+nut_inset_diameter = nut_width * nut_inset_multiplier * 2 / sqrt(3);
 
 channel_width = bend_radius - tube_radius - 2 * wall_width;
 channel_height = tube_radius - wall_width;
 
 echo(skirt_radius=skirt_radius);
 echo(bolt_hole_diameter=bolt_hole_diameter);
-echo(nut_hole_diameter=nut_hole_diameter);
+echo(bolt_inset_diameter=bolt_inset_diameter);
+echo(nut_inset_diameter=nut_inset_diameter);
 
 echo(channel_width=channel_width);
 echo(channel_height=channel_height);
@@ -168,11 +169,11 @@ module bolt_hole(top) {
   if (top) {
     // bolt sink
     color(c="brown")
-      cylinder(h=bolt_head_depth, d=bolt_head_diameter, center=false);
+      cylinder(h=bolt_inset_depth, d=bolt_inset_diameter, center=false);
   } else {
     // captive nut
     color(c="tan")
-      cylinder(h=nut_depth, d=nut_hole_diameter, center=false, $fn=6);
+      cylinder(h=nut_depth, d=nut_inset_diameter, center=false, $fn=6);
   }
 }
 
@@ -197,7 +198,7 @@ module extrude_bend(top) {
   shaft_end = min(bend_shaft_angle * 2, (180 - bend_angle));
   color(c="royalblue")
     rotate_extrude(start=shaft_start, angle=shaft_end)
-      cross_section_shaft(flange_inner=false, flange_outer=true);
+      cross_section_shaft(flange_inner=false, flange_outer=top);
 }
 
 module cross_section_shaft(flange_inner, flange_outer) {
@@ -221,8 +222,10 @@ module cross_section_shaft(flange_inner, flange_outer) {
 // text implies top
 module extrude_straight(text, text_mirror) {
 
-  hole1_dy = straight_l / 3;
-  hole2_dy = -straight_l / 2 + 2 * bolt_hole_diameter;
+  shaft_y = max(bolt_inset_diameter, nut_inset_diameter) + 2 * wall_width;
+
+  hole1_dy = +straight_l / 2 - shaft_y / 2;
+  hole2_dy = -straight_l / 2 + shaft_y / 2;
 
   difference() {
 
@@ -238,13 +241,13 @@ module extrude_straight(text, text_mirror) {
         // bolt shaft near bend
         color(c="steelblue")
           translate(v=[0, 0, -hole1_dy])
-            linear_extrude(height=bolt_hole_diameter * 2, center=true)
+            linear_extrude(height=shaft_y, center=true)
               cross_section_shaft(flange_inner=text, flange_outer=text);
 
         // bolt shaft near end
         color(c="darkblue")
           translate(v=[0, 0, -hole2_dy])
-            linear_extrude(height=bolt_hole_diameter * 2, center=true)
+            linear_extrude(height=shaft_y, center=true)
               cross_section_shaft(flange_inner=text, flange_outer=text);
       }
     }
