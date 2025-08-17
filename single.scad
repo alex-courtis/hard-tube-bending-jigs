@@ -45,9 +45,6 @@ flange_height_multiplier = 0.5; // [0:0.1:1]
 // applied to wall width
 flange_width_multiplier = 1; // [0:0.1:5]
 
-// shaft with no hole
-bend_shaft_angle = 15; // [0:1:180]
-
 // size
 text_height = 8; // [4:1:50]
 
@@ -178,12 +175,14 @@ module bolt_hole(top) {
 }
 
 module straight_text(text, text_mirror) {
+  dy = -(wall_width + channel_width + wall_width + tube_radius + wall_width) / 2;
+
   rotate(a=90, v=[0, 0, 1])
-    translate(v=[0, -text_height - wall_width * 2, 0])
+    translate(v=[0, dy, 0])
       linear_extrude(height=text_depth, center=false)
         mirror(v=[0, 1]) // text facing inwards
           mirror(v=[text_mirror ? 1 : 0, 0]) // optional for mirrorred straight
-            text(size=text_height, text=text, halign="center", valign="top");
+            text(size=text_height, text=text, halign="center", valign="center");
 }
 
 module extrude_bend(top) {
