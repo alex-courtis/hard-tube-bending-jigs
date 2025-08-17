@@ -188,20 +188,27 @@ module straight_text(text, text_mirror) {
 
 module extrude_bend(top) {
 
-  // body
-  color(c="lightgray")
-    rotate_extrude(angle=180 - bend_angle)
-      children();
+  difference() {
+    union() {
+      // body
+      color(c="lightgray")
+        rotate_extrude(angle=180 - bend_angle)
+          children();
 
-  // shaft
-  shaft_start = max((180 - bend_angle) / 2 - bend_shaft_angle, 0);
-  shaft_end = min(bend_shaft_angle * 2, (180 - bend_angle));
-  color(c="royalblue")
-    rotate_extrude(start=shaft_start, angle=shaft_end)
-      cross_section_shaft(flange_inner=false, flange_outer=top);
+      // brace
+      color(c="royalblue")
+        rotate_extrude(angle=180 - bend_angle)
+          cross_section_brace(flange_inner=false, flange_outer=top);
+    }
+
+    // bolt hole near end
+    rotate(a=(180- bend_angle) / 2)
+      translate(v=[channel_width / 2 + wall_width, 0, 0])
+        bolt_hole(top=top);
+  }
 }
 
-module cross_section_shaft(flange_inner, flange_outer) {
+module cross_section_brace(flange_inner, flange_outer) {
   translate(v=[wall_width, wall_width, 0]) {
     square([channel_width, channel_height], center=false);
 
@@ -222,10 +229,9 @@ module cross_section_shaft(flange_inner, flange_outer) {
 // text implies top
 module extrude_straight(text, text_mirror) {
 
-  shaft_y = max(bolt_inset_diameter, nut_inset_diameter) + 2 * wall_width;
+  brace_y = max(bolt_inset_diameter, nut_inset_diameter) + 2 * wall_width * 2;
 
-  hole1_dy = +straight_l / 2 - shaft_y / 2;
-  hole2_dy = -straight_l / 2 + shaft_y / 2;
+  brace_hole_dy = -straight_l / 2 + brace_y / 2;
 
   difference() {
 
@@ -238,17 +244,11 @@ module extrude_straight(text, text_mirror) {
           linear_extrude(height=straight_l, center=true)
             children();
 
-        // bolt shaft near bend
-        color(c="steelblue")
-          translate(v=[0, 0, -hole1_dy])
-            linear_extrude(height=shaft_y, center=true)
-              cross_section_shaft(flange_inner=text, flange_outer=text);
-
-        // bolt shaft near end
+        // bolt brace
         color(c="darkblue")
-          translate(v=[0, 0, -hole2_dy])
-            linear_extrude(height=shaft_y, center=true)
-              cross_section_shaft(flange_inner=text, flange_outer=text);
+          translate(v=[0, 0, -brace_hole_dy])
+            linear_extrude(height=brace_y, center=true)
+              cross_section_brace(flange_inner=text, flange_outer=text);
       }
     }
 
@@ -256,12 +256,8 @@ module extrude_straight(text, text_mirror) {
     if (text)
       straight_text(text=text, text_mirror=text_mirror);
 
-    // bolt hole near bend
-    translate(v=[wall_width + channel_width / 2, hole1_dy, 0])
-      bolt_hole(top=text);
-
-    // bolt hole near end
-    translate(v=[wall_width + channel_width / 2, hole2_dy, 0])
+    // bolt hole
+    translate(v=[wall_width + channel_width / 2, brace_hole_dy, 0])
       bolt_hole(top=text);
   }
 }
