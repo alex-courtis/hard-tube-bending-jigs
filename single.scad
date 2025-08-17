@@ -228,9 +228,9 @@ module cross_section_brace(flange_inner, flange_outer) {
 // text implies top
 module extrude_straight(text, text_mirror) {
 
-  brace_y = max(bolt_inset_diameter, nut_inset_diameter) + 2 * wall_width * 2;
+  brace_y = max(bolt_inset_diameter, nut_inset_diameter) + wall_width;
 
-  brace_hole_dy = -straight_l / 2 + brace_y / 2;
+  brace_hole_dy = -straight_l / 2 + brace_y;
 
   difference() {
 
