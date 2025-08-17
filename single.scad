@@ -49,7 +49,7 @@ flange_width_multiplier = 1; // [0:0.1:5]
 bend_shaft_angle = 15; // [0:1:180]
 
 // size
-text_pt = 7; // [4:1:50]
+text_height = 8; // [4:1:50]
 
 // inset
 text_depth = 0.6; // [0:0.1:10]
@@ -178,12 +178,12 @@ module bolt_hole(top) {
 }
 
 module straight_text(text, text_mirror) {
-  translate(v=[tube_radius + wall_width, 0, text_depth])
-    rotate(a=90, v=[0, 0, 1])
-      rotate(a=180, v=[1, 0, 0])
-        linear_extrude(height=text_depth, center=false)
-          mirror(v=[text_mirror ? 1 : 0, 0, 0])
-            text(size=tube_radius, text=text, halign="center", valign="center");
+  rotate(a=90, v=[0, 0, 1])
+    translate(v=[0, -text_height - wall_width * 2, 0])
+      linear_extrude(height=text_depth, center=false)
+        mirror(v=[0, 1]) // text facing inwards
+          mirror(v=[text_mirror ? 1 : 0, 0]) // optional for mirrorred straight
+            text(size=text_height, text=text, halign="center", valign="top");
 }
 
 module extrude_bend(top) {
@@ -202,7 +202,7 @@ module extrude_bend(top) {
     }
 
     // bolt hole near end
-    rotate(a=(180- bend_angle) / 2)
+    rotate(a=(180 - bend_angle) / 2)
       translate(v=[channel_width / 2 + wall_width, 0, 0])
         bolt_hole(top=top);
   }
