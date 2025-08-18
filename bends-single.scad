@@ -67,7 +67,7 @@ echo(nut_inset_diameter=nut_inset_diameter);
 echo(channel_width=channel_width);
 echo(channel_height=channel_height);
 
-include <lib.scad>
+include <bends-lib.scad>
 
 module extrude_bend(top) {
 
