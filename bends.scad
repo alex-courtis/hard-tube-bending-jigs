@@ -54,6 +54,8 @@ text_height = 7; // [4:1:50]
 // inset
 text_depth = 0.6; // [0:0.1:10]
 
+font= "Hack Nerd Font Mono";
+
 // derived
 skirt_radius = bend_radius + tube_radius * skirt_radius_multiplier;
 bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;

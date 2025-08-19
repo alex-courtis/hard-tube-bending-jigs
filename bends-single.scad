@@ -5,13 +5,13 @@ module top() {
     cross_section_top();
 
   translate(v=[0, -straight_l[0] / 2, 0])
-    extrude_straight(straight_l[0], str("R", bend_radius, "   ", bend_angle[0], "°"), text_mirror=false)
+    extrude_straight(l=straight_l[0], top=true, text=str("ø", tube_radius * 2, "    R", bend_radius, "    ", bend_angle[1], "° ⟶"), text_mirror_y=false)
       cross_section_top();
 
   rotate(a=180 - bend_angle[0], v=[0, 0, 1])
     translate(v=[0, straight_l[1] / 2, 0])
       mirror([0, 1, 0])
-        extrude_straight(straight_l[1], text=str("ø", tube_radius * 2), text_mirror=true)
+        extrude_straight(l=straight_l[1], top=true, text=str("⟵ ", bend_angle[1], "°", "    R", bend_radius, "    ø", tube_radius * 2), text_mirror_y=true)
           cross_section_top();
 }
 
@@ -20,13 +20,13 @@ module bottom() {
     cross_section_bottom();
 
   translate(v=[0, -straight_l[0] / 2, 0])
-    extrude_straight(straight_l[0])
+    extrude_straight(l=straight_l[0], top=false)
       cross_section_bottom();
 
   rotate(a=180 - bend_angle[0], v=[0, 0, 1])
     translate(v=[0, straight_l[1] / 2, 0])
       mirror([0, 1, 0])
-        extrude_straight(straight_l[1])
+        extrude_straight(l=straight_l[1], top=false)
           cross_section_bottom();
 }
 

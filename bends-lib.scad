@@ -86,17 +86,7 @@ module bolt_hole(top) {
   }
 }
 
-module straight_text(dx, text, text_mirror) {
-  rotate(a=90, v=[0, 0, 1])
-    translate(v=[0, dx, 0])
-      linear_extrude(height=text_depth, center=false)
-        mirror(v=[0, 1]) // text facing inwards
-          mirror(v=[text_mirror ? 1 : 0, 0]) // optional for mirrorred straight
-            text(size=text_height, text=text, halign="center", valign="center");
-}
-
-// text implies top
-module extrude_straight(l, text, text_mirror) {
+module extrude_straight(l, top, text, text_mirror_y) {
 
   brace_y = max(bolt_inset_diameter, nut_inset_diameter) + wall_width;
 
@@ -117,19 +107,32 @@ module extrude_straight(l, text, text_mirror) {
         color(c="darkblue")
           translate(v=[0, 0, -brace_hole_dy])
             linear_extrude(height=brace_y, center=true)
-              cross_section_brace(flange_inner=text, flange_outer=text);
+              cross_section_brace(flange_inner=top, flange_outer=top);
       }
     }
 
     // bend info
-    if (text) {
-      straight_text(dx=-text_height * 1, text=text, text_mirror=text_mirror);
-      straight_text(dx=-bend_radius - wall_width + text_height * 1, text=str("L", l), text_mirror=text_mirror);
+    if (top) {
+      dx = bend_radius + wall_width - text_height - text_height / 2;
+
+      // top provided
+      translate(v=[dx, 0, 0])
+        mirror(v=[0, text_mirror_y ? 0 : 1, 0])
+          linear_extrude(height=text_depth, center=false)
+            rotate(a=270, v=[0, 0, 1])
+              text(font=font, size=text_height, text=text, halign="center", valign="bottom");
+
+      // bottom length
+      mirror(v=[0, text_mirror_y ? 0 : 1, 0])
+        translate(v=[text_height/ 2, 0, 0])
+          linear_extrude(height=text_depth, center=false)
+            rotate(a=270, v=[0, 0, 1])
+              text(font=font, size=text_height, text=str("L", l), halign="center", valign="bottom");
     }
 
     // bolt hole
     translate(v=[wall_width + channel_width / 2, brace_hole_dy, 0])
-      bolt_hole(top=text);
+      bolt_hole(top=top);
   }
 }
 
