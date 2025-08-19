@@ -86,3 +86,71 @@ module bolt_hole(top) {
   }
 }
 
+module straight_text(dx, text, text_mirror) {
+  rotate(a=90, v=[0, 0, 1])
+    translate(v=[0, dx, 0])
+      linear_extrude(height=text_depth, center=false)
+        mirror(v=[0, 1]) // text facing inwards
+          mirror(v=[text_mirror ? 1 : 0, 0]) // optional for mirrorred straight
+            text(size=text_height, text=text, halign="center", valign="center");
+}
+
+// text implies top
+module extrude_straight(l, text, text_mirror) {
+
+  brace_y = max(bolt_inset_diameter, nut_inset_diameter) + wall_width;
+
+  brace_hole_dy = -l / 2 + brace_y;
+
+  difference() {
+
+    union() {
+
+      rotate(a=90, v=[1, 0, 0]) {
+
+        // body
+        color(c="gray")
+          linear_extrude(height=l, center=true)
+            children();
+
+        // bolt brace
+        color(c="darkblue")
+          translate(v=[0, 0, -brace_hole_dy])
+            linear_extrude(height=brace_y, center=true)
+              cross_section_brace(flange_inner=text, flange_outer=text);
+      }
+    }
+
+    // bend info
+    if (text) {
+      straight_text(dx=-text_height * 1, text=text, text_mirror=text_mirror);
+      straight_text(dx=-bend_radius - wall_width + text_height * 1, text=str("L", l), text_mirror=text_mirror);
+    }
+
+    // bolt hole
+    translate(v=[wall_width + channel_width / 2, brace_hole_dy, 0])
+      bolt_hole(top=text);
+  }
+}
+
+module extrude_bend(a, top) {
+
+  difference() {
+    union() {
+      // body
+      color(c="lightgray")
+        rotate_extrude(angle=180 - a)
+          children();
+
+      // brace
+      color(c="royalblue")
+        rotate_extrude(angle=180 - a)
+          cross_section_brace(flange_inner=false, flange_outer=top);
+    }
+
+    // bolt hole near end
+    rotate(a=(180 - a) / 2)
+      translate(v=[channel_width / 2 + wall_width, 0, 0])
+        bolt_hole(top=top);
+  }
+}

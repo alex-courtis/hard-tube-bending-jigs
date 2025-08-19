@@ -9,8 +9,8 @@ tube_radius = 8; // [4:1:10]
 // to tube centre
 bend_radius = 20; // [10:0.01:100]
 
-// tube
-bend_angle = 90; // [0:1:180]
+// of tube, left to right
+bend_angle = [60, 120]; // [-180:1:180]
 
 // distance between centres of bends, left to right
 straight_l = [80, 60, 40]; // [10:1:1000]
@@ -72,7 +72,7 @@ echo(channel_height=channel_height);
 
 // conditional inclusion is not possible
 include <bends-single.scad>
-// include <double.scad>
+// include <bends-double.scad>
 
 render() if (part == "double")
   bends_double();
