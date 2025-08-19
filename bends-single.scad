@@ -5,13 +5,32 @@ module top() {
     cross_section_top();
 
   translate(v=[0, -straight_l[0] / 2, 0])
-    extrude_straight(l=straight_l[0], top=true, text=str("ø", tube_radius * 2, "    R", bend_radius, "    ", bend_angle[1], "° ⟶"), text_mirror_y=false)
+    extrude_straight(
+      l=straight_l[0], top=true, text_mirror_y=false,
+      text=str(
+        "ø", tube_radius * 2,
+        "  ",
+        "R", bend_radius,
+        "  ",
+        bend_angle[0], "°⟶"
+      )
+    )
       cross_section_top();
 
   rotate(a=180 - bend_angle[0], v=[0, 0, 1])
     translate(v=[0, straight_l[1] / 2, 0])
       mirror([0, 1, 0])
-        extrude_straight(l=straight_l[1], top=true, text=str("⟵ ", bend_angle[1], "°", "    R", bend_radius, "    ø", tube_radius * 2), text_mirror_y=true)
+        extrude_straight(
+          l=straight_l[1], top=true,
+          text_mirror_y=true,
+          text=str(
+            "⟵", bend_angle[0], "°",
+            "  ",
+            "R", bend_radius,
+            "  ",
+            "ø", tube_radius * 2
+          )
+        )
           cross_section_top();
 }
 

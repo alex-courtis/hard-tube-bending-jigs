@@ -13,7 +13,7 @@ bend_radius = 20; // [10:0.01:100]
 bend_angle = [60, 120]; // [-180:1:180]
 
 // distance between centres of bends, left to right
-straight_l = [80, 60, 40]; // [10:1:1000]
+straight_l = [80, 70, 90]; // [10:1:1000]
 
 // skirt, top and sides thickness, lip radii
 wall_width = 1.6; // [0:0.1:5]
@@ -49,7 +49,7 @@ flange_height_multiplier = 0.5; // [0:0.1:1]
 flange_width_multiplier = 1; // [0:0.1:5]
 
 // size
-text_height = 7; // [4:1:50]
+text_height = 5; // [3:1:50]
 
 // inset
 text_depth = 0.6; // [0:0.1:10]

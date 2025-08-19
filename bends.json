@@ -16,7 +16,7 @@
             "skirt_radius_multiplier": "1.3999999999999999",
             "straight_l": "[100, 100, 0]",
             "text_depth": "0.60000000000000009",
-            "text_height": "8",
+            "text_height": "7",
             "tube_radius": "8",
             "wall_width": "1.2000000000000002"
         },
@@ -53,7 +53,7 @@
             "skirt_radius_multiplier": "1.3999999999999999",
             "straight_l": "[150, 150, 0]",
             "text_depth": "0.60000000000000009",
-            "text_height": "8",
+            "text_height": "9",
             "tube_radius": "8",
             "wall_width": "1.2000000000000002"
         },
@@ -95,7 +95,7 @@
             "skirt_radius_multiplier": "2",
             "straight_l": "[100, 100, 0]",
             "text_depth": "0.59999999999999998",
-            "text_height": "11",
+            "text_height": "7",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
         }
