@@ -136,13 +136,13 @@ module extrude_straight(l, top, text, text_mirror_y) {
   }
 }
 
-module extrude_bend(a, top) {
+module extrude_bend(a, s, top) {
 
   difference() {
     union() {
       // body
       color(c="lightgray")
-        rotate_extrude(angle=180 - a)
+        rotate_extrude(angle=180 - a, start=s)
           children();
 
       // brace

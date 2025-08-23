@@ -1,7 +1,7 @@
 include <bends-lib.scad>
 
-module top() {
-  extrude_bend(bend_angle[0], top=true)
+module top_single() {
+  extrude_bend(a=bend_angle[0], s=0, top=true)
     cross_section_top();
 
   translate(v=[0, -straight_l[0] / 2, 0])
@@ -34,8 +34,8 @@ module top() {
           cross_section_top();
 }
 
-module bottom() {
-  extrude_bend(bend_angle[0])
+module bottom_single() {
+  extrude_bend(a=bend_angle[0], s=0, top=false)
     cross_section_bottom();
 
   translate(v=[0, -straight_l[0] / 2, 0])
@@ -50,10 +50,10 @@ module bottom() {
 }
 
 module bends_single() {
-  top();
+  top_single();
 
   // shift with a gap of 1
   dxy = max(straight_l[0], straight_l[1]) + bend_radius + wall_width + 1;
   translate(v=[dxy, dxy, 0])
-    bottom();
+    bottom_single();
 }
