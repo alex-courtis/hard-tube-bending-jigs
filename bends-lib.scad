@@ -90,7 +90,7 @@ module extrude_straight(l, top, text, text_mirror_y) {
 
   brace_y = max(bolt_inset_diameter, nut_inset_diameter) + wall_width;
 
-  brace_hole_dy = -l / 2 + brace_y;
+  brace_hole_dy = ( -l + brace_y) / 2;
 
   difference() {
 
@@ -108,6 +108,12 @@ module extrude_straight(l, top, text, text_mirror_y) {
           translate(v=[0, 0, -brace_hole_dy])
             linear_extrude(height=brace_y, center=true)
               cross_section_brace(flange_inner=top, flange_outer=top);
+
+        // brace
+        color(c="cadetblue")
+          translate(v=[0, 0, brace_hole_dy])
+            linear_extrude(height=brace_y, center=true)
+              cross_section_brace(flange_inner=false, flange_outer=top);
       }
     }
 
@@ -124,7 +130,7 @@ module extrude_straight(l, top, text, text_mirror_y) {
 
       // bottom length
       mirror(v=[0, text_mirror_y ? 0 : 1, 0])
-        translate(v=[text_height/ 2, 0, 0])
+        translate(v=[text_height / 2, 0, 0])
           linear_extrude(height=text_depth, center=false)
             rotate(a=270, v=[0, 0, 1])
               text(font=font, size=text_height, text=str("L", l), halign="center", valign="bottom");
@@ -138,22 +144,13 @@ module extrude_straight(l, top, text, text_mirror_y) {
 
 module extrude_bend(a, s, top) {
 
-  difference() {
-    union() {
-      // body
-      color(c="lightgray")
-        rotate_extrude(angle=180 - a, start=s)
-          children();
+  // body
+  color(c="lightgray")
+    rotate_extrude(angle=180 - a, start=s)
+      children();
 
-      // brace
-      color(c="royalblue")
-        rotate_extrude(angle=180 - a)
-          cross_section_brace(flange_inner=false, flange_outer=top);
-    }
-
-    // bolt hole near end
-    rotate(a=(180 - a) / 2)
-      translate(v=[channel_width / 2 + wall_width, 0, 0])
-        bolt_hole(top=top);
-  }
+  // brace
+  color(c="royalblue")
+    rotate_extrude(angle=180 - a)
+      cross_section_brace(flange_inner=false, flange_outer=top);
 }

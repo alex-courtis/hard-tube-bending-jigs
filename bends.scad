@@ -43,7 +43,7 @@ nut_inset_multiplier = 1.03; // [1:0.01:2]
 nut_depth = 4.5; // [0:0.1:20]
 
 // above channel, applied to wall width
-flange_height_multiplier = 0.5; // [0:0.1:1]
+flange_height_multiplier = 0.6; // [0:0.1:1]
 
 // applied to wall width
 flange_width_multiplier = 1; // [0:0.1:5]
