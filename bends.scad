@@ -60,7 +60,7 @@ text_depth = 0.6; // [0:0.1:10]
 font = "Hack Nerd Font Mono";
 
 // derived
-font_metrics = fontmetrics(font=font);
+font_metrics = fontmetrics(font=font, size=text_height);
 
 skirt_radius = bend_radius + tube_radius * skirt_radius_multiplier;
 bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;
