@@ -86,7 +86,20 @@ module bolt_hole(top) {
   }
 }
 
-module extrude_straight(l, top, text, text_mirror_y) {
+module extrude_text(text, dx, dy, halign) {
+
+  linear_extrude(height=text_depth, center=false)
+    translate(
+      v=[
+        dx,
+        dy - font_metrics.max.descent, // shift up from baseline valign
+        0,
+      ]
+    )
+      text(font=font, size=text_height, text=text, valign="baseline", halign=halign);
+}
+
+module extrude_straight(l, al, ar, top, text) {
 
   brace_y = max(bolt_inset_diameter, nut_inset_diameter) + wall_width;
 
@@ -103,7 +116,7 @@ module extrude_straight(l, top, text, text_mirror_y) {
           linear_extrude(height=l, center=true)
             children();
 
-        // bolt brace
+        // brace
         color(c="darkblue")
           translate(v=[0, 0, -brace_hole_dy])
             linear_extrude(height=brace_y, center=true)
@@ -113,44 +126,75 @@ module extrude_straight(l, top, text, text_mirror_y) {
         color(c="cadetblue")
           translate(v=[0, 0, brace_hole_dy])
             linear_extrude(height=brace_y, center=true)
-              cross_section_brace(flange_inner=false, flange_outer=top);
+              cross_section_brace(flange_inner=top, flange_outer=top);
       }
     }
 
     // bend info
     if (top) {
-      dx = bend_radius + wall_width - text_height - text_height / 2;
+      mirror(v=[0, 1, 0]) {
+        rotate(a=270, v=[0, 0, 1]) {
+          dy = bend_radius + wall_width - wall_width * 2 - font_metrics.nominal.ascent;
 
-      // top provided
-      translate(v=[dx, 0, 0])
-        mirror(v=[0, text_mirror_y ? 0 : 1, 0])
-          linear_extrude(height=text_depth, center=false)
-            rotate(a=270, v=[0, 0, 1])
-              text(font=font, size=text_height, text=text, halign="center", valign="bottom");
+          extrude_text(
+            text=al ? str(al, "°") : str("ø", tube_radius * 2),
+            dx=-l / 2 + wall_width * 2,
+            dy=dy,
+            halign="left"
+          );
 
-      // bottom length
-      mirror(v=[0, text_mirror_y ? 0 : 1, 0])
-        translate(v=[text_height / 2, 0, 0])
-          linear_extrude(height=text_depth, center=false)
-            rotate(a=270, v=[0, 0, 1])
-              text(font=font, size=text_height, text=str("L", l), halign="center", valign="bottom");
+          extrude_text(
+            text=ar ? str(ar, "°") : str("ø", tube_radius * 2),
+            dx=l / 2 - wall_width * 2,
+            dy=dy,
+            halign="right"
+          );
+
+          extrude_text(
+            text=str("R", bend_radius),
+            dx=0,
+            dy=dy,
+            halign="center"
+          );
+
+          extrude_text(
+            text=str("L", l),
+            dx=0,
+            dy=wall_width,
+            halign="center"
+          );
+        }
+      }
     }
 
-    // bolt hole
+    // bolt holes
     translate(v=[wall_width + channel_width / 2, brace_hole_dy, 0])
+      bolt_hole(top=top);
+    translate(v=[wall_width + channel_width / 2, -brace_hole_dy, 0])
       bolt_hole(top=top);
   }
 }
 
 module extrude_bend(a, s, top) {
 
-  // body
-  color(c="lightgray")
-    rotate_extrude(angle=180 - a, start=s)
-      children();
+  difference() {
+    union() {
+      // body
+      color(c="lightgray")
+        rotate_extrude(angle=180 - a, start=s)
+          children();
 
-  // brace
-  color(c="royalblue")
-    rotate_extrude(angle=180 - a)
-      cross_section_brace(flange_inner=false, flange_outer=top);
+      // brace
+      color(c="royalblue")
+        rotate_extrude(angle=180 - a)
+          cross_section_brace(flange_inner=false, flange_outer=top);
+    }
+
+    // optional extra bolt hole
+    if (bend_bolt) {
+      rotate(a=(180 - bend_angle[0]) / 2)
+        translate(v=[channel_width / 2 + wall_width, 0, 0])
+          bolt_hole(top=top);
+    }
+  }
 }

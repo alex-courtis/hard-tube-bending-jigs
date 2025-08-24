@@ -48,21 +48,28 @@ flange_height_multiplier = 0.6; // [0:0.1:1]
 // applied to wall width
 flange_width_multiplier = 1; // [0:0.1:5]
 
+// extra bolt hole in bend, space allowing
+bend_bolt = true;
+
 // size
 text_height = 5; // [3:1:50]
 
 // inset
 text_depth = 0.6; // [0:0.1:10]
 
-font= "Hack Nerd Font Mono";
+font = "Hack Nerd Font Mono";
 
 // derived
+font_metrics = fontmetrics(font=font);
+
 skirt_radius = bend_radius + tube_radius * skirt_radius_multiplier;
 bolt_hole_diameter = bolt_diameter * bolt_radius_multiplier;
 nut_inset_diameter = nut_width * nut_inset_multiplier * 2 / sqrt(3);
 
 channel_width = bend_radius - tube_radius - 2 * wall_width;
 channel_height = tube_radius - wall_width;
+
+echo(font_metrics=font_metrics);
 
 echo(skirt_radius=skirt_radius);
 echo(bolt_hole_diameter=bolt_hole_diameter);
@@ -74,7 +81,7 @@ echo(channel_height=channel_height);
 
 // conditional inclusion is not possible
 include <bends-single.scad>
-// include <bends-double.scad>
+include <bends-double.scad>
 
 render() if (part == "double")
   bends_double();
