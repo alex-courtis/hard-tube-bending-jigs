@@ -175,26 +175,44 @@ module extrude_straight(l, al, ar, top, text) {
   }
 }
 
-module extrude_bend(a, s, top) {
+module extrude_bend(a, top, concave = false) {
 
   difference() {
-    union() {
-      // body
+    if (a < 0) {
+      tw = top ? total_width_top : total_width_bottom;
+
+      color(c="slategray")
+        mirror(v=[1, 0])
+          translate(v=[-tw, 0])
+            difference() {
+              // body and flange
+              rotate_extrude(angle=180 + a, start=0)
+                mirror(v=[1, 0])
+                  translate(v=[-tw, 0])
+                    children();
+
+              // bolt hole
+              if (bend_bolt) {
+                rotate(a=(180 + a) / 2)
+                  translate(v=[tw - channel_width / 2 - wall_width, 0, 0])
+                    bolt_hole(top=top);
+              }
+            }
+    } else {
+
       color(c="lightgray")
-        rotate_extrude(angle=180 - a, start=s)
-          children();
+        difference() {
+          // body and flange
+          rotate_extrude(angle=180 - a)
+            children();
 
-      // brace
-      color(c="royalblue")
-        rotate_extrude(angle=180 - a)
-          cross_section_brace(flange_inner=false, flange_outer=top);
-    }
-
-    // optional extra bolt hole
-    if (bend_bolt) {
-      rotate(a=(180 - bend_angle[0]) / 2)
-        translate(v=[channel_width / 2 + wall_width, 0, 0])
-          bolt_hole(top=top);
+          // bolt hole
+          if (bend_bolt) {
+            rotate(a=(180 - bend_angle[0]) / 2)
+              translate(v=[channel_width / 2 + wall_width, 0, 0])
+                bolt_hole(top=top);
+          }
+        }
     }
   }
 }

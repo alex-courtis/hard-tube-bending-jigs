@@ -69,6 +69,10 @@ nut_inset_diameter = nut_width * nut_inset_multiplier * 2 / sqrt(3);
 channel_width = bend_radius - tube_radius - 2 * wall_width;
 channel_height = tube_radius - wall_width;
 
+total_width_top = bend_radius + wall_width;
+total_width_bottom = skirt_radius + wall_width;
+total_height = tube_radius + wall_width;
+
 echo(font_metrics=font_metrics);
 
 echo(skirt_radius=skirt_radius);
@@ -78,6 +82,10 @@ echo(nut_inset_diameter=nut_inset_diameter);
 
 echo(channel_width=channel_width);
 echo(channel_height=channel_height);
+
+echo(total_width_top=total_width_top);
+echo(total_width_bottom=total_width_bottom);
+echo(total_height=total_height);
 
 // conditional inclusion is not possible
 include <bends-single.scad>
