@@ -59,6 +59,9 @@ text_depth = 0.6; // [0:0.1:10]
 
 font = "Hack Nerd Font Mono";
 
+// part separation
+bottom_z = 100; // [0:1:500]
+
 // derived
 font_metrics = fontmetrics(font=font, size=text_height);
 

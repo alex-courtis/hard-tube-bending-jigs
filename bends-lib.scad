@@ -175,44 +175,33 @@ module extrude_straight(l, al, ar, top, text) {
   }
 }
 
-module extrude_bend(a, top, concave = false) {
+// TODO this rotates about the entire skirt when < 0, need to remove it
+module extrude_bend(a, top) {
+  tw = top ? total_width_top : total_width_bottom;
 
-  difference() {
-    if (a < 0) {
-      tw = top ? total_width_top : total_width_bottom;
+  // negative a bolt rotates from tube, positive from channel
+  chan_dx = channel_width / 2 + wall_width;
+  bolt_dx = a >= 0 ? chan_dx : tw - chan_dx;
 
-      color(c="slategray")
-        mirror(v=[1, 0])
-          translate(v=[-tw, 0])
-            difference() {
-              // body and flange
-              rotate_extrude(angle=180 + a, start=0)
-                mirror(v=[1, 0])
-                  translate(v=[-tw, 0])
-                    children();
+  mx = a >= 0 ? 0 : 1;
+  dx = a >= 0 ? 0 : -tw;
 
-              // bolt hole
-              if (bend_bolt) {
-                rotate(a=(180 + a) / 2)
-                  translate(v=[tw - channel_width / 2 - wall_width, 0, 0])
-                    bolt_hole(top=top);
-              }
-            }
-    } else {
+  mirror(v=[mx, 0])
+    translate(v=[dx, 0])
+      difference() {
 
-      color(c="lightgray")
-        difference() {
-          // body and flange
-          rotate_extrude(angle=180 - a)
-            children();
+        // body
+        color(c="slategray")
+          rotate_extrude(angle=180 - abs(a))
+            mirror(v=[mx, 0])
+              translate(v=[dx, 0])
+                children();
 
-          // bolt hole
-          if (bend_bolt) {
-            rotate(a=(180 - bend_angle[0]) / 2)
-              translate(v=[channel_width / 2 + wall_width, 0, 0])
-                bolt_hole(top=top);
-          }
+        // bolt hole
+        if (bend_bolt) {
+          rotate(a=(180 - abs(a)) / 2)
+            translate(v=[bolt_dx, 0, 0])
+              bolt_hole(top=top);
         }
-    }
-  }
+      }
 }

@@ -33,6 +33,7 @@ module bottom_single() {
           cross_section_bottom();
 }
 
+// TODO replace with straight_bend
 module bends_single() {
   top_single();
 
