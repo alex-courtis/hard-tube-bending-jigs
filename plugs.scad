@@ -38,7 +38,7 @@ color(c="orange") {
     translate(v=[0, 0, h_tube + h_flange])
       mirror(v=[0, 0, 1])
         cylinder(d1=d1_flange_tube, d2=d2_flange_tube, h=h_flange);
-    cylinder(d=d_rod_outer, h=h_tube + h_flange + h_socket);
+    cylinder(d=d_rod_outer, h=h_tube + h_flange * 2 + h_socket);
   }
 }
 
