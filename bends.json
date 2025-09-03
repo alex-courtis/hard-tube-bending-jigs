@@ -3,7 +3,7 @@
     "parameterSets": {
         "single-16-0-32.5-100": {
             "$fn": "200",
-            "bend_angle": "[1, 0, 0]",
+            "bend_angle": "[0, 0, 0]",
             "bend_radius": "32.5",
             "bends": "1",
             "bolt_diameter": "3",
@@ -23,7 +23,7 @@
         },
         "single-16-0-42.05-150": {
             "$fn": "200",
-            "bend_angle": "[1, 0, 0]",
+            "bend_angle": "[0, 0, 0]",
             "bend_radius": "42.049999999999997",
             "bolt_diameter": "3",
             "bolt_inset_depth": "2.5",
@@ -42,11 +42,13 @@
         "single-16-90-42.05-150": {
             "$fn": "200",
             "bend_angle": "[90, 0, 0]",
+            "bend_bolt": "false",
             "bend_radius": "42.049999999999997",
             "bolt_diameter": "3",
             "bolt_inset_depth": "2.5",
             "bolt_inset_diameter": "6",
             "bolt_radius_multiplier": "1.02",
+            "flange_height_multiplier": "0.60000000000000009",
             "nut_depth": "4.5",
             "nut_inset_multiplier": "1.03",
             "nut_width": "5.5",
@@ -59,7 +61,8 @@
         },
         "single-16-0-20.5-100": {
             "$fn": "200",
-            "bend_angle": "[1, 0, 0]",
+            "bend_angle": "[0, 0, 0]",
+            "bend_bolt": "false",
             "bend_radius": "20.5",
             "bolt_diameter": "3",
             "bolt_inset_depth": "2.5",
@@ -79,7 +82,7 @@
         },
         "single-16-0-60.3-100": {
             "$fn": "200",
-            "bend_angle": "[1, 0, 0]",
+            "bend_angle": "[0, 0, 0]",
             "bend_radius": "60.300000000000004",
             "bolt_diameter": "3",
             "bolt_inset_depth": "2.5",
@@ -100,6 +103,7 @@
         "single-16-135-15-125": {
             "$fn": "200",
             "bend_angle": "[135, 0, 90]",
+            "bend_bolt": "false",
             "bend_radius": "15",
             "bolt_diameter": "3",
             "bolt_inset_depth": "2.5",

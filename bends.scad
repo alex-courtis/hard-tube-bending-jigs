@@ -313,8 +313,8 @@ module build(
   a_next = bend_angle[n - 1];
 
   // rotate about the tube, not origin
-  dx = a && a >= 0 ? 0 : top ? total_width_top : total_width_bottom;
-  rot = a ? 180 + a : 0;
+  dx = is_num(a) && a >= 0 ? 0 : top ? total_width_top : total_width_bottom;
+  rot = is_num(a) ? 180 + a : 0;
 
   // rotate and shift x to origin
   translate(v=[dx, 0, 0]) {
@@ -333,7 +333,7 @@ module build(
         }
 
         // bends in place at origin
-        if (a) {
+        if (is_num(a)) {
           extrude_bend(a=a, top=top) {
             if (top) {
               cross_section_top();
