@@ -8,7 +8,7 @@ tube_radius = 8; // [4:1:10]
 bend_radius = 20; // [10:0.01:100]
 
 // n bends, n+1 straights
-bends = 1; // [1:1:3]
+bends = 3; // [1:1:3]
 
 // of tube, left to right
 bend_angle = [60, -120, 90]; // [-180:1:180]
