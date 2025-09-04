@@ -14,7 +14,7 @@ bends = 3; // [1:1:3]
 bend_angle = [60, -120, 90]; // [-180:1:180]
 
 // distance between centres of bends, left to right, 0 for no bend
-straight_l = [80, 70, 90, 100]; // [0:1:1000]
+straight_l = [80, 70, 90, 100]; // [0:0.01:1000]
 
 // skirt, top and sides thickness, lip radii
 wall_width = 1.6; // [0:0.1:5]
@@ -301,6 +301,7 @@ module extrude_bend(a, top) {
                 cross_section_brace(flange_inner=top, flange_outer=top);
               }
 
+        // TODO this is incorrect for negative angles
         // bolt hole
         if (bend_bolt)
           rotate(a=(180 - abs(a)) / 2)

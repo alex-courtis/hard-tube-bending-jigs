@@ -126,6 +126,30 @@
             "text_height": "5",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
+        },
+        "double_cpu_rad": {
+            "$fn": "200",
+            "bend_angle": "[120, -120, 90]",
+            "bend_bolt": "false",
+            "bend_radius": "35",
+            "bends": "2",
+            "bolt_diameter": "3",
+            "bolt_inset_depth": "2.5",
+            "bolt_inset_diameter": "6",
+            "bolt_radius_multiplier": "1.02",
+            "bottom_z": "20",
+            "flange_height_multiplier": "0.60000000000000009",
+            "flange_width_multiplier": "1",
+            "font": "Hack Nerd Font Mono",
+            "nut_depth": "4.5",
+            "nut_inset_multiplier": "1.03",
+            "nut_width": "5.5",
+            "skirt_radius_multiplier": "2",
+            "straight_l": "[100, 77.54, 80, 0]",
+            "text_depth": "0.60000000000000009",
+            "text_height": "5",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
         }
     }
 }
