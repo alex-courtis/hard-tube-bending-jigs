@@ -75,6 +75,7 @@ channel_height = tube_radius - wall_width;
 
 total_width_top = bend_radius + wall_width;
 total_width_bottom = skirt_radius + wall_width;
+total_width_bottom_no_skirt = bend_radius + wall_width;
 total_height = tube_radius + wall_width;
 
 echo(font_metrics=font_metrics);
@@ -91,32 +92,39 @@ echo(total_width_top=total_width_top);
 echo(total_width_bottom=total_width_bottom);
 echo(total_height=total_height);
 
+assert(total_width_top == total_width_bottom_no_skirt);
+
 function truncv(v, l) = [for (i = [0:l - 1]) v[i]];
 
-module cross_section_bottom() {
+module cross_section_bottom(skirt = true) {
 
-  // bottom skirt
-  square([skirt_radius, wall_width], center=false);
+  if (skirt) {
 
-  // bottom lip
-  translate(v=[skirt_radius, 0, 0]) {
-    intersection() {
-      square([wall_width, wall_width], center=false);
+    // bottom skirt
+    square([skirt_radius, wall_width], center=false);
 
-      circle(r=wall_width);
-    }
+    // bottom lip
+    translate(v=[skirt_radius, 0, 0])
+      intersection() {
+        square([wall_width, wall_width], center=false);
+
+        circle(r=wall_width);
+      }
+  } else {
+    // fill in the lip for continuity
+    square([total_width_bottom_no_skirt, wall_width], center=false);
   }
 
   // body
   difference() {
-    square([bend_radius, wall_width + tube_radius], center=false);
+    square([bend_radius, total_height], center=false);
 
     // hollow
     translate(v=[wall_width, wall_width, 0])
       square([channel_width, channel_height + wall_width], center=false);
 
     // tube hollow
-    translate(v=[bend_radius, wall_width + tube_radius, 0])
+    translate(v=[bend_radius, total_height, 0])
       circle(r=tube_radius);
   }
 }
@@ -124,24 +132,23 @@ module cross_section_bottom() {
 module cross_section_top() {
 
   // top lip
-  translate(v=[bend_radius, 0, 0]) {
+  translate(v=[bend_radius, 0, 0])
     intersection() {
       square([wall_width, wall_width], center=false);
       circle(r=wall_width);
     }
-  }
 
   difference() {
 
     // outer
-    square([bend_radius, tube_radius + wall_width], center=false);
+    square([bend_radius, total_height], center=false);
 
     // channel
     translate(v=[wall_width, wall_width, 0])
       square([channel_width, channel_height + wall_width], center=false);
 
     // tube hollow
-    translate(v=[bend_radius, tube_radius + wall_width, 0])
+    translate(v=[bend_radius, total_height, 0])
       circle(r=tube_radius);
   }
 }
@@ -153,14 +160,12 @@ module cross_section_brace(flange_inner, flange_outer) {
     y = wall_width * flange_width_multiplier;
     z = channel_height + wall_width * (1 + flange_height_multiplier);
 
-    if (flange_inner) {
+    if (flange_inner)
       square([y, z], center=false);
-    }
 
-    if (flange_outer) {
+    if (flange_outer)
       translate(v=[channel_width - y, 0])
         square([y, z], center=false);
-    }
   }
 }
 
@@ -168,7 +173,7 @@ module bolt_hole(top) {
 
   // hole
   color(c="black")
-    cylinder(h=wall_width * 2 + tube_radius, d=bolt_hole_diameter, center=false);
+    cylinder(h=total_height, d=bolt_hole_diameter, center=false);
 
   if (top) {
     // bolt sink
@@ -184,13 +189,8 @@ module bolt_hole(top) {
 module extrude_text(text, dx, dy, halign) {
 
   linear_extrude(height=text_depth, center=false)
-    translate(
-      v=[
-        dx,
-        dy - font_metrics.max.descent, // shift up from baseline valign
-        0,
-      ]
-    )
+    // shift up from baseline valign
+    translate(v=[dx, dy - font_metrics.max.descent, 0])
       text(font=font, size=text_height, text=text, valign="baseline", halign=halign);
 }
 
@@ -208,8 +208,12 @@ module extrude_straight(l, al, ar, top, text) {
 
         // body
         color(c="gray")
-          linear_extrude(height=l, center=true)
-            children();
+          linear_extrude(height=l, center=true) {
+            if (top)
+              cross_section_top();
+            else
+              cross_section_bottom();
+          }
 
         // brace
         color(c="darkblue")
@@ -270,16 +274,15 @@ module extrude_straight(l, al, ar, top, text) {
   }
 }
 
-// TODO this rotates about the entire skirt when < 0, need to remove it
 module extrude_bend(a, top) {
-  tw = top ? total_width_top : total_width_bottom;
+
+  // mirrored rotation for negative angles
+  dx = a >= 0 ? 0 : top ? -total_width_top : -total_width_bottom_no_skirt;
+  mx = a >= 0 ? 0 : 1;
 
   // negative a bolt rotates from tube, positive from channel
   chan_dx = channel_width / 2 + wall_width;
-  bolt_dx = a >= 0 ? chan_dx : tw - chan_dx;
-
-  mx = a >= 0 ? 0 : 1;
-  dx = a >= 0 ? 0 : -tw;
+  bolt_dx = a >= 0 ? chan_dx : dx - chan_dx;
 
   mirror(v=[mx, 0])
     translate(v=[dx, 0])
@@ -289,15 +292,20 @@ module extrude_bend(a, top) {
         color(c="slategray")
           rotate_extrude(angle=180 - abs(a))
             mirror(v=[mx, 0])
-              translate(v=[dx, 0])
-                children();
+              translate(v=[dx, 0]) {
+                if (top)
+                  cross_section_top();
+                else
+                  cross_section_bottom(skirt=a >= 0);
+
+                cross_section_brace(flange_inner=top, flange_outer=top);
+              }
 
         // bolt hole
-        if (bend_bolt) {
+        if (bend_bolt)
           rotate(a=(180 - abs(a)) / 2)
             translate(v=[bolt_dx, 0, 0])
               bolt_hole(top=top);
-        }
       }
 }
 
@@ -312,52 +320,33 @@ module build(
   a = as[n];
   a_next = bend_angle[n - 1];
 
-  // rotate about the tube, not origin
-  dx = is_num(a) && a >= 0 ? 0 : top ? total_width_top : total_width_bottom;
+  dx = is_num(a) && a >= 0 ? 0 : top ? total_width_top : total_width_bottom_no_skirt;
   rot = is_num(a) ? 180 + a : 0;
 
-  // rotate and shift x to origin
-  translate(v=[dx, 0, 0]) {
-    rotate(a=rot) {
+  // rotate fulcrum about origin
+  translate(v=[dx, 0, 0])
+    rotate(a=rot)
       translate(v=[-dx, 0, 0]) {
 
         // straight shift y to origin
-        translate(v=[0, -l / 2, 0]) {
-          extrude_straight(l=l, al=a_next, ar=a, top=top) {
-            if (top) {
-              cross_section_top();
-            } else {
-              cross_section_bottom();
-            }
-          }
-        }
+        translate(v=[0, -l / 2, 0])
+          extrude_straight(l=l, al=a_next, ar=a, top=top);
 
         // bends in place at origin
-        if (is_num(a)) {
-          extrude_bend(a=a, top=top) {
-            if (top) {
-              cross_section_top();
-            } else {
-              cross_section_bottom();
-            }
-            cross_section_brace(flange_inner=top, flange_outer=top);
-          }
-        }
+        if (is_num(a))
+          extrude_bend(a=a, top=top);
 
         // recurse and shift y to origin
         if (n > 0)
-          translate(v=[0, -l, 0]) {
+          translate(v=[0, -l, 0])
             build(n=n - 1, top=top);
-          }
       }
-    }
-  }
 }
 
 render() {
   build(top=true);
 
-  translate(v=[0, 0, tube_radius * 2 + wall_width * 2 + bottom_z])
+  translate(v=[0, 0, total_height * 2 + bottom_z])
     mirror(v=[0, 0, 1])
       build(top=false);
 }
