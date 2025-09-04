@@ -96,24 +96,18 @@ assert(total_width_top == total_width_bottom_no_skirt);
 
 function truncv(v, l) = [for (i = [0:l - 1]) v[i]];
 
-module cross_section_bottom(skirt = true) {
+module cross_section_bottom() {
 
-  if (skirt) {
+  // bottom skirt
+  square([skirt_radius, wall_width], center=false);
 
-    // bottom skirt
-    square([skirt_radius, wall_width], center=false);
+  // bottom lip
+  translate(v=[skirt_radius, 0, 0])
+    intersection() {
+      square([wall_width, wall_width], center=false);
 
-    // bottom lip
-    translate(v=[skirt_radius, 0, 0])
-      intersection() {
-        square([wall_width, wall_width], center=false);
-
-        circle(r=wall_width);
-      }
-  } else {
-    // fill in the lip for continuity
-    square([total_width_bottom_no_skirt, wall_width], center=false);
-  }
+      circle(r=wall_width);
+    }
 
   // body
   difference() {
@@ -277,7 +271,7 @@ module extrude_straight(l, al, ar, top, text) {
 module extrude_bend(a, top) {
 
   // mirrored rotation for negative angles
-  dx = a >= 0 ? 0 : top ? -total_width_top : -total_width_bottom_no_skirt;
+  dx = a >= 0 ? 0 : -bend_radius * 2;
   mx = a >= 0 ? 0 : 1;
 
   // negative a bolt rotates from tube, positive from channel
@@ -296,7 +290,7 @@ module extrude_bend(a, top) {
                 if (top)
                   cross_section_top();
                 else
-                  cross_section_bottom(skirt=a >= 0);
+                  cross_section_bottom();
 
                 cross_section_brace(flange_inner=top, flange_outer=top);
               }
@@ -321,7 +315,7 @@ module build(
   a = as[n];
   a_next = bend_angle[n - 1];
 
-  dx = is_num(a) && a >= 0 ? 0 : top ? total_width_top : total_width_bottom_no_skirt;
+  dx = is_num(a) && a >= 0 ? 0 : bend_radius * 2;
   rot = is_num(a) ? 180 + a : 0;
 
   // rotate fulcrum about origin
