@@ -145,7 +145,7 @@
             "nut_inset_multiplier": "1.03",
             "nut_width": "5.5",
             "skirt_radius_multiplier": "2",
-            "straight_l": "[100, 77.54, 80, 0]",
+            "straight_l": "[100, 42.54, 100, 0]",
             "text_depth": "0.60000000000000009",
             "text_height": "5",
             "tube_radius": "8",

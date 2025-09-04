@@ -237,17 +237,10 @@ module extrude_straight(l, al, ar, top, text) {
           );
 
           extrude_text(
-            text=ar ? str(ar, "°") : str("ø", tube_radius * 2),
+            text=ar ? str(ar, "°") : str("R", bend_radius),
             dx=l / 2 - wall_width * 2,
             dy=dy,
             halign="right"
-          );
-
-          extrude_text(
-            text=str("R", bend_radius),
-            dx=0,
-            dy=dy,
-            halign="center"
           );
 
           extrude_text(
