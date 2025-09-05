@@ -72,6 +72,18 @@
             "text_height": "5",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
+        },
+        "single_cpu_rad": {
+            "bend_angle": "[135, -120, 90]",
+            "bend_bolt": "false",
+            "bend_radius": "35",
+            "bends": "1",
+            "bottom_z": "100",
+            "skirt_radius_multiplier": "2",
+            "straight_l": "[120, 120, 100, 0]",
+            "text_height": "5",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
         }
     }
 }
