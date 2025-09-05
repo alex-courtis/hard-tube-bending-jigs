@@ -11,7 +11,7 @@ bends = 3; // [1:1:3]
 bend_angle = [60, -120, 90]; // [-180:1:180]
 
 // distance between centres of bends, left to right, 0 for no bend
-straight_l = [80, 70, 90, 100]; // [0:0.01:1000]
+straight_l = [80, 70, 90, 100]; // [0:0.001:1000]
 
 // skirt, top and sides thickness, lip radii
 wall_width = 1.6; // [0:0.1:5]
@@ -245,6 +245,18 @@ module extrude_straight(l, al, ar, top, text) {
             dy=dy,
             halign="right"
           );
+
+          if (is_num(al) && is_num(ar) && abs(al) == abs(ar)) {
+            parallel_straights_distance = l * sin(180 - abs(al)) + bend_radius;
+            echo(parallel_straights_distance=parallel_straights_distance);
+            echo("l * sin(a) + bend_radius");
+            extrude_text(
+              text=str("P", round(parallel_straights_distance * 1000) / 1000),
+              dx=0,
+              dy=wall_width + font_metrics.interline + wall_width,
+              halign="center"
+            );
+          }
 
           extrude_text(
             text=str("L", l),

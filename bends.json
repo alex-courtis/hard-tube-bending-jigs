@@ -68,7 +68,7 @@
             "bends": "2",
             "bottom_z": "100",
             "skirt_radius_multiplier": "2",
-            "straight_l": "[100, 42.54, 100, 0]",
+            "straight_l": "[100, 44.768, 100, 0]",
             "text_height": "5",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
