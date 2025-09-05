@@ -68,8 +68,8 @@
             "bends": "2",
             "bottom_z": "100",
             "skirt_radius_multiplier": "2",
-            "straight_l": "[100, 44.768, 100, 0]",
-            "text_height": "5",
+            "straight_l": "[100, 44.768, 75, 0]",
+            "text_height": "6",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
         },
@@ -82,6 +82,18 @@
             "skirt_radius_multiplier": "2",
             "straight_l": "[120, 120, 100, 0]",
             "text_height": "5",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
+        },
+        "single_right": {
+            "bend_angle": "[90, -120, 90]",
+            "bend_bolt": "false",
+            "bend_radius": "35",
+            "bends": "1",
+            "bottom_z": "100",
+            "skirt_radius_multiplier": "2",
+            "straight_l": "[120, 120, 75, 0]",
+            "text_height": "9",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
         }
