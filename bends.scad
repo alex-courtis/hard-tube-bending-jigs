@@ -1,6 +1,3 @@
-// global
-$fn = 200; // [0:1:1000]
-
 // outer
 tube_radius = 8; // [4:1:10]
 
@@ -21,6 +18,17 @@ wall_width = 1.6; // [0:0.1:5]
 
 // of tube radius in addition to bend_radius
 skirt_radius_multiplier = 2; // [1:0.1:3]
+
+// extra bolt hole in bend, space allowing
+bend_bolt = true;
+
+// font size
+text_height = 5; // [3:0.1:50]
+
+// part separation
+bottom_z = 100; // [0:1:500]
+
+/* [Hidden] */
 
 // default M3
 bolt_diameter = 3; // [2:0.1:10]
@@ -49,19 +57,14 @@ flange_height_multiplier = 0.6; // [0:0.1:1]
 // applied to wall width
 flange_width_multiplier = 1; // [0:0.1:5]
 
-// extra bolt hole in bend, space allowing
-bend_bolt = true;
-
-// size
-text_height = 5; // [3:0.1:50]
-
 // inset
 text_depth = 0.6; // [0:0.1:10]
 
+// all
 font = "Hack Nerd Font Mono";
 
-// part separation
-bottom_z = 100; // [0:1:500]
+// global
+$fn = 200; // [0:1:1000]
 
 // derived
 font_metrics = fontmetrics(font=font, size=text_height);
