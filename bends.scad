@@ -5,7 +5,7 @@ $fn = 200; // [0:1:1000]
 tube_radius = 8; // [4:1:10]
 
 // to tube centre
-bend_radius = 20; // [10:0.01:100]
+bend_radius = 35; // [10:0.01:100]
 
 // n bends, n+1 straights
 bends = 3; // [1:1:3]
@@ -53,7 +53,7 @@ flange_width_multiplier = 1; // [0:0.1:5]
 bend_bolt = true;
 
 // size
-text_height = 5; // [3:1:50]
+text_height = 5; // [3:0.1:50]
 
 // inset
 text_depth = 0.6; // [0:0.1:10]
@@ -231,14 +231,14 @@ module extrude_straight(l, al, ar, top, text) {
 
           extrude_text(
             text=al ? str(al, "°") : str("ø", tube_radius * 2),
-            dx=-l / 2 + wall_width * 2,
+            dx=-l / 2,
             dy=dy,
             halign="left"
           );
 
           extrude_text(
             text=ar ? str(ar, "°") : str("R", bend_radius),
-            dx=l / 2 - wall_width * 2,
+            dx=l / 2,
             dy=dy,
             halign="right"
           );
@@ -264,12 +264,9 @@ module extrude_straight(l, al, ar, top, text) {
 module extrude_bend(a, top) {
 
   // mirrored rotation for negative angles
-  dx = a >= 0 ? 0 : -bend_radius * 2;
   mx = a >= 0 ? 0 : 1;
-
-  // negative a bolt rotates from tube, positive from channel
-  chan_dx = channel_width / 2 + wall_width;
-  bolt_dx = a >= 0 ? chan_dx : dx - chan_dx;
+  dx = a >= 0 ? 0 : -bend_radius * 2;
+  bolt_dx = dx + channel_width / 2 + wall_width;
 
   mirror(v=[mx, 0])
     translate(v=[dx, 0])
@@ -288,12 +285,12 @@ module extrude_bend(a, top) {
                 cross_section_brace(flange_inner=top, flange_outer=top);
               }
 
-        // TODO this is incorrect for negative angles
         // bolt hole
         if (bend_bolt)
           rotate(a=(180 - abs(a)) / 2)
-            translate(v=[bolt_dx, 0, 0])
-              bolt_hole(top=top);
+            mirror(v=[mx, 0])
+              translate(v=[bolt_dx, 0, 0])
+                bolt_hole(top=top);
       }
 }
 
