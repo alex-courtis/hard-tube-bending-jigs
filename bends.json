@@ -96,6 +96,18 @@
             "text_height": "9",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
+        },
+        "double_disk_rad": {
+            "bend_angle": "[120, -120, 90]",
+            "bend_bolt": "true",
+            "bend_radius": "35",
+            "bends": "2",
+            "bottom_z": "100",
+            "skirt_radius_multiplier": "2",
+            "straight_l": "[100, 50.375, 75, 0]",
+            "text_height": "6",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
         }
     }
 }
