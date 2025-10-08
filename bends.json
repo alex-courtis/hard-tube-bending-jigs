@@ -4,6 +4,7 @@
         "single-16-0-32.5-100": {
             "bend_angle": "[0, 0, 0]",
             "bend_bolt": "false",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "32.5",
             "bends": "1",
             "bottom_z": "100",
@@ -16,6 +17,7 @@
         "single-16-0-42.05-150": {
             "bend_angle": "[0, 0, 0]",
             "bend_bolt": "false",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "42.049999999999997",
             "bends": "1",
             "bottom_z": "100",
@@ -28,6 +30,7 @@
         "single-16-90-42.05-150": {
             "bend_angle": "[90, 0, 0]",
             "bend_bolt": "false",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "42.049999999999997",
             "bends": "1",
             "bottom_z": "100",
@@ -40,6 +43,7 @@
         "single-16-0-20.5-100": {
             "bend_angle": "[0, 0, 0]",
             "bend_bolt": "false",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "20.5",
             "bends": "1",
             "bottom_z": "100",
@@ -52,6 +56,7 @@
         "single-16-0-60.3-100": {
             "bend_angle": "[0, 0, 0]",
             "bend_bolt": "true",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "60.300000000000004",
             "bends": "1",
             "bottom_z": "100",
@@ -62,8 +67,9 @@
             "wall_width": "1.6000000000000001"
         },
         "double_cpu_rad": {
-            "bend_angle": "[120, -120, 90]",
+            "bend_angle": "[120, 120, 0]",
             "bend_bolt": "true",
+            "bend_convex": "[1, 0, 1]",
             "bend_radius": "35",
             "bends": "2",
             "bottom_z": "100",
@@ -74,8 +80,9 @@
             "wall_width": "1.6000000000000001"
         },
         "single_cpu_rad": {
-            "bend_angle": "[120, -120, 90]",
+            "bend_angle": "[120, 0, 0]",
             "bend_bolt": "false",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "35",
             "bends": "1",
             "bottom_z": "100",
@@ -86,8 +93,9 @@
             "wall_width": "1.6000000000000001"
         },
         "single_right": {
-            "bend_angle": "[90, -120, 90]",
+            "bend_angle": "[90, 0, 0]",
             "bend_bolt": "false",
+            "bend_convex": "[1, 1, 1]",
             "bend_radius": "35",
             "bends": "1",
             "bottom_z": "100",
@@ -98,8 +106,9 @@
             "wall_width": "1.6000000000000001"
         },
         "double_disk_rad": {
-            "bend_angle": "[120, -120, 90]",
+            "bend_angle": "[120, 120, 0]",
             "bend_bolt": "true",
+            "bend_convex": "[1, 0, 1]",
             "bend_radius": "35",
             "bends": "2",
             "bottom_z": "100",

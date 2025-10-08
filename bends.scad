@@ -8,7 +8,10 @@ bend_radius = 35; // [10:0.01:100]
 bends = 3; // [1:1:3]
 
 // of tube, left to right
-bend_angle = [60, -120, 90]; // [-180:1:180]
+bend_angle = [60, 120, 90]; // [0:1:180]
+
+// 1: convex 0: concave
+bend_convex = [1, 0, 1]; // [0:1:1]
 
 // distance between centres of bends, left to right, 0 for no bend
 straight_l = [80, 70, 90, 100]; // [0:0.001:1000]
@@ -246,8 +249,8 @@ module extrude_straight(l, al, ar, top, text) {
             halign="right"
           );
 
-          if (is_num(al) && is_num(ar) && abs(al) == abs(ar)) {
-            parallel_straights_distance = l * sin(180 - abs(al)) + bend_radius;
+          if (is_num(al) && is_num(ar) && al == ar) {
+            parallel_straights_distance = l * sin(180 - al) + bend_radius;
             echo(parallel_straights_distance=parallel_straights_distance);
             echo("l * sin(a) + bend_radius");
             extrude_text(
@@ -276,11 +279,11 @@ module extrude_straight(l, al, ar, top, text) {
   }
 }
 
-module extrude_bend(a, top) {
+module extrude_bend(a, c, top) {
 
   // mirrored rotation for negative angles
-  mx = a >= 0 ? 0 : 1;
-  dx = a >= 0 ? 0 : -bend_radius * 2;
+  mx = c ? 0 : 1;
+  dx = c ? 0 : -bend_radius * 2;
   bolt_dx = dx + channel_width / 2 + wall_width;
 
   mirror(v=[mx, 0])
@@ -289,7 +292,7 @@ module extrude_bend(a, top) {
 
         // body
         color(c="slategray")
-          rotate_extrude(angle=180 - abs(a))
+          rotate_extrude(angle=180 - a)
             mirror(v=[mx, 0])
               translate(v=[dx, 0]) {
                 if (top)
@@ -302,7 +305,7 @@ module extrude_bend(a, top) {
 
         // bolt hole
         if (bend_bolt)
-          rotate(a=(180 - abs(a)) / 2)
+          rotate(a=(180 - a) / 2)
             mirror(v=[mx, 0])
               translate(v=[bolt_dx, 0, 0])
                 bolt_hole(top=top);
@@ -313,15 +316,17 @@ module build(
   n = bends,
   ls = truncv(straight_l, bends + 1),
   as = truncv(bend_angle, bends),
+  cs = truncv(bend_convex, bends),
   top = false
 ) {
 
   l = ls[n];
   a = as[n];
+  c = cs[n];
   a_next = bend_angle[n - 1];
 
-  dx = is_num(a) && a >= 0 ? 0 : bend_radius * 2;
-  rot = is_num(a) ? 180 + a : 0;
+  dx = is_num(a) && c ? 0 : bend_radius * 2;
+  rot = is_num(a) ? 180 + c * 2 * a - a : 0;
 
   // rotate fulcrum about origin
   translate(v=[dx, 0, 0])
@@ -334,7 +339,7 @@ module build(
 
         // bends in place at origin
         if (is_num(a))
-          extrude_bend(a=a, top=top);
+          extrude_bend(a=a, c=c, top=top);
 
         // recurse and shift y to origin
         if (n > 0)
