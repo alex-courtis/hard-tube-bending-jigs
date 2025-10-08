@@ -119,14 +119,27 @@
             "wall_width": "1.6000000000000001"
         },
         "double_gpu_tee_snake": {
+            "bend_angle": "[0, 0, 90]",
+            "bend_bolt": "true",
+            "bend_convex": "[1, 0, 1]",
+            "bend_radius": "32.75",
+            "bends": "3",
+            "bottom_z": "100",
+            "skirt_radius_multiplier": "2",
+            "straight_l": "[150, 100, 15, 0]",
+            "text_height": "8",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
+        },
+        "single_gpu_tee_snake": {
             "bend_angle": "[0, 0, 0]",
             "bend_bolt": "true",
             "bend_convex": "[1, 0, 1]",
-            "bend_radius": "35",
-            "bends": "2",
+            "bend_radius": "32.75",
+            "bends": "1",
             "bottom_z": "100",
             "skirt_radius_multiplier": "2",
-            "straight_l": "[150, 100, 15, 100]",
+            "straight_l": "[100, 100, 75, 100]",
             "text_height": "8",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
