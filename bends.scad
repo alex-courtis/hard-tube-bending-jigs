@@ -66,6 +66,9 @@ text_depth = 0.6; // [0:0.1:10]
 // all
 font = "Hack Nerd Font Mono";
 
+// text length cutoff
+min_text_straight_l = 25;
+
 // global
 $fn = 200; // [0:1:1000]
 
@@ -198,6 +201,9 @@ module extrude_straight(l, al, ar, top, text) {
 
   brace_y = max(bolt_inset_diameter, nut_inset_diameter) + wall_width;
 
+  brace1 = (brace_y < l);
+  brace2 = (brace_y * 2 < l);
+
   brace_hole_dy = ( -l + brace_y) / 2;
 
   difference() {
@@ -216,21 +222,25 @@ module extrude_straight(l, al, ar, top, text) {
           }
 
         // brace
-        color(c="darkblue")
-          translate(v=[0, 0, -brace_hole_dy])
-            linear_extrude(height=brace_y, center=true)
-              cross_section_brace(flange_inner=top, flange_outer=top);
+        if (brace1) {
+          color(c="darkblue")
+            translate(v=[0, 0, -brace_hole_dy])
+              linear_extrude(height=brace_y, center=true)
+                cross_section_brace(flange_inner=top, flange_outer=top);
+        }
 
         // brace
-        color(c="cadetblue")
-          translate(v=[0, 0, brace_hole_dy])
-            linear_extrude(height=brace_y, center=true)
-              cross_section_brace(flange_inner=top, flange_outer=top);
+        if (brace2) {
+          color(c="cadetblue")
+            translate(v=[0, 0, brace_hole_dy])
+              linear_extrude(height=brace_y, center=true)
+                cross_section_brace(flange_inner=top, flange_outer=top);
+        }
       }
     }
 
     // bend info
-    if (top) {
+    if (top && l >= min_text_straight_l) {
       mirror(v=[0, 1, 0]) {
         rotate(a=270, v=[0, 0, 1]) {
           dy = bend_radius + wall_width - wall_width * 2 - font_metrics.nominal.ascent;
@@ -272,10 +282,13 @@ module extrude_straight(l, al, ar, top, text) {
     }
 
     // bolt holes
-    translate(v=[wall_width + channel_width / 2, brace_hole_dy, 0])
-      bolt_hole(top=top);
-    translate(v=[wall_width + channel_width / 2, -brace_hole_dy, 0])
-      bolt_hole(top=top);
+    if (brace1)
+      translate(v=[wall_width + channel_width / 2, brace_hole_dy, 0])
+        bolt_hole(top=top);
+
+    if (brace2)
+      translate(v=[wall_width + channel_width / 2, -brace_hole_dy, 0])
+        bolt_hole(top=top);
   }
 }
 
