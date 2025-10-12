@@ -148,7 +148,7 @@
             "bend_angle": "[135, 0, 0]",
             "bend_bolt": "false",
             "bend_convex": "[1, 1, 1]",
-            "bend_radius": "25",
+            "bend_radius": "35",
             "bends": "1",
             "bottom_z": "100",
             "skirt_radius_multiplier": "2",
