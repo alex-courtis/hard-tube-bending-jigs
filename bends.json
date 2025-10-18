@@ -156,6 +156,19 @@
             "text_height": "6",
             "tube_radius": "8",
             "wall_width": "1.6000000000000001"
+        },
+        "double_gpu_rad": {
+            "bend_angle": "[150, 150, 0]",
+            "bend_bolt": "false",
+            "bend_convex": "[1, 0, 1]",
+            "bend_radius": "35",
+            "bends": "2",
+            "bottom_z": "100",
+            "skirt_radius_multiplier": "2",
+            "straight_l": "[100, 45, 75, 0]",
+            "text_height": "6.5",
+            "tube_radius": "8",
+            "wall_width": "1.6000000000000001"
         }
     }
 }

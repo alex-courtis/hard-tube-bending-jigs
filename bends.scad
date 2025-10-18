@@ -259,7 +259,8 @@ module extrude_straight(l, al, ar, top, text) {
             halign="right"
           );
 
-          if (is_num(al) && is_num(ar) && al == ar) {
+          // this only works for a=120
+          if (is_num(al) && is_num(ar) && al == ar && al != 120) {
             parallel_straights_distance = l * sin(180 - al) + bend_radius;
             echo(parallel_straights_distance=parallel_straights_distance);
             echo("l * sin(a) + bend_radius");
