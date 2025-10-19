@@ -23,10 +23,10 @@ wall_width = 1.6; // [0:0.1:5]
 skirt_radius_multiplier = 2; // [1:0.1:3]
 
 // extra bolt hole in bend, space allowing
-bend_bolt = true;
+bend_bolt = false;
 
 // font size
-text_height = 5; // [3:0.1:50]
+text_height = 7; // [3:0.1:50]
 
 // part separation
 bottom_z = 100; // [0:1:500]
@@ -260,7 +260,7 @@ module extrude_straight(l, al, ar, top, text) {
           );
 
           // this only works for a=120
-          if (is_num(al) && is_num(ar) && al == ar && al != 120) {
+          if (is_num(al) && is_num(ar) && al == ar && al == 120) {
             parallel_straights_distance = l * sin(180 - al) + bend_radius;
             echo(parallel_straights_distance=parallel_straights_distance);
             echo("l * sin(a) + bend_radius");
