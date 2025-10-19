@@ -246,14 +246,14 @@ module extrude_straight(l, al, ar, top, text) {
           dy = bend_radius + wall_width - wall_width * 2 - font_metrics.nominal.ascent;
 
           extrude_text(
-            text=is_num(al) ? str(al, "°") : str("ø", tube_radius * 2),
+            text=is_num(al) ? str(al, "°") : str("R", bend_radius, " ø", tube_radius * 2),
             dx=-l / 2 + (is_num(al) ? 0 : wall_width),
             dy=dy,
             halign="left"
           );
 
           extrude_text(
-            text=is_num(ar) ? str(ar, "°") : str("R", bend_radius),
+            text=is_num(ar) ? str(ar, "°") : str("ø", tube_radius * 2, " R", bend_radius),
             dx=l / 2 - (is_num(ar) ? 0 : wall_width),
             dy=dy,
             halign="right"
